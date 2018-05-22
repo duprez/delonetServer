@@ -1,4 +1,6 @@
-# Delonet
+<img src="./deloPNGblue.png">
+
+<br/>
 Esta es la parte que incluye todos los datos del servidor del proyecto delonet.<br>
 Para poder utilizarlo deberás usar:
 <ol>
