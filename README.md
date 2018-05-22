@@ -21,7 +21,7 @@ Dentro de la carpeta configs, abre el archivo database.js.
 
 Añade una nueva línea a la constante 'data' especificando el puerto y cambia la contraseña en password, utilizando 'root':
 
-<code>
+<pre><code>
 const data = {
     "host": "localhost",
     "port": 8888,
@@ -29,11 +29,11 @@ const data = {
     "password": "root",
     "database": "delonet"
 }
-</code>
+</code></pre>
 
 Finalmente, abre el archivo server.js del directorio raíz del proyecto y añade el puerto a la conexión:
 
-<code>
+<pre><code>
 var connection = mysql.createConnection({
     host: databaseConf['host'],
     port: databaseConf['port'],
@@ -41,7 +41,7 @@ var connection = mysql.createConnection({
     password: databaseConf['password'],
     database: databaseConf['database']
 });
-</code>
+</code></pre>
 
 
 ## Contributors
