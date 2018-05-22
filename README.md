@@ -1,12 +1,13 @@
-<img src="./deloPNGblue.png">
+## <img src="./deloPNGblue.png">
 
 <br/>
-Esta es la parte que incluye todos los datos del servidor del proyecto delonet.<br>
+Esta es la parte que incluye todos los datos del servidor del proyecto delonet.
+<br/><br/>
 Para poder utilizarlo deberás usar:
 <ol>
-    <li> Hacer npm i en el paquete principal </li>
-    <li> Usar Wampp/Mampp/Lampp </li>
-    <li> Si tú entorno de trabajo es un Mac, deberás hacer algunos cambios documentados más abajo </li>
+    <li> Hacer npm i en el paquete principal. </li>
+    <li> Usar Wampp/Mampp/Lampp. </li>
+    <li> Si tú entorno de trabajo es un Mac, deberás hacer algunos cambios documentados más abajo. </li>
 </ol>
 
 ## Mac
