@@ -21,8 +21,7 @@ Dentro de la carpeta configs, abre el archivo database.js.
 
 Añade una nueva línea a la constante 'data' especificando el puerto y cambia la contraseña en password, utilizando 'root':
 
-<pre><code>
-const data = {
+<pre><code>const data = {
     "host": "localhost",
     "port": 8888,
     "user": "root",
@@ -33,8 +32,7 @@ const data = {
 
 Finalmente, abre el archivo server.js del directorio raíz del proyecto y añade el puerto a la conexión:
 
-<pre><code>
-var connection = mysql.createConnection({
+<pre><code>var connection = mysql.createConnection({
     host: databaseConf['host'],
     port: databaseConf['port'],
     user: databaseConf['user'],
