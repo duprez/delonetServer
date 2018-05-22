@@ -3,9 +3,46 @@ Esta es la parte que incluye todos los datos del servidor del proyecto delonet.<
 Para poder utilizarlo deberás usar:
 <ol>
     <li> Hacer npm i en el paquete principal </li>
-    <li> Si tú entorno de trabajo es un Mac, deberás incluir las líneas que están comentadas en la conexión con la base de datos y   modificar la contraseña para conectarte con la db </li>
     <li> Usar Wampp/Mampp/Lampp </li>
+    <li> Si tú entorno de trabajo es un Mac, deberás hacer algunos cambios documentados más abajo </li>
 </ol>
+
+## Mac
+Por defecto, MAMP utiliza el puerto 8888, pero la conexión a la base de datos SQL se realiza utilizando el puerto 3306
+salvo que se le indique lo contrario. Por tanto, es necesario especificar explícitamente que queremos utilizar el puerto
+8888 o cambiar el puerto de MAMP en su propia configuración para que utilice el 3306.
+
+Además, la cuenta root del gestor de la base de datos utiliza 'root' como contraseña a diferencia de WAMP en Windows, que
+es un string vacío.
+
+Para especificar explícitamente el puerto de la conexión a la base de datos SQL y cambiar la contraseña de root:
+
+Dentro de la carpeta configs, abre el archivo database.js.
+
+Añade una nueva línea a la constante 'data' especificando el puerto y cambia la contraseña en password, utilizando 'root':
+
+<code>
+const data = {
+    "host": "localhost",
+    "port": 8888,
+    "user": "root",
+    "password": "root",
+    "database": "delonet"
+}
+</code>
+
+Finalmente, abre el archivo server.js del directorio raíz del proyecto y añade el puerto a la conexión:
+
+<code>
+var connection = mysql.createConnection({
+    host: databaseConf['host'],
+    port: databaseConf['port'],
+    user: databaseConf['user'],
+    password: databaseConf['password'],
+    database: databaseConf['database']
+});
+</code>
+
 
 ## Contributors
 Este proyecto ha sido realizado por Juan Manuel Martín Escobar y Antonio Duprez Hernández. <br>
