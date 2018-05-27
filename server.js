@@ -67,16 +67,19 @@ app.get('/api/socios/:id', (req, res) => {
 app.post('/api/socios', (req, res) => {
     const keys = Object.keys(req.body);
     let index = 0;
-    let changeText = "";
-    keys.forEach(key => {
-        changeText += "'" + req.body[key] + "'";
-        if ( index < keys.length - 1 ) changeText += " , ";
-        index++;
-    });
+    const changeText = '\'' + req.body["nombre"] + '\',' +
+    '\'' + req.body["apellidos"] + '\',' +
+    '\'' + req.body["direccion"] + '\',' +
+    '\'' + req.body["fecha_alta"] + '\',' +
+    '\'' + req.body["fecha_baja"] + '\',' +
+           req.body["telefono"] + ',' +
+        null;
 
     connection.query(`INSERT INTO socios VALUES ('', ${changeText} )`, (error, data) => {
-        if ( error ) console.log("Error: No se ha podido insertar el socio.");
-        else res.send("Nuevo socio añadido");
+        if ( error ){
+            console.log("Error: No se ha podido insertar el socio.");
+            console.log(error);
+        }
     });
 });
 
@@ -99,8 +102,10 @@ app.put('/api/socios/:id', function (req, res) {
         index++;
     });
     connection.query(`UPDATE socios SET ${changeText} WHERE id_socio = '${id_socio}'`, (error, data ) => {
-        if ( error ) console.log("Error: No se ha podido actualizar el socio indicado.");
-        else res.send("El socio " + id_socio + " ha sido modificado");
+        if ( error ) {
+            console.log("Error: No se ha podido actualizar el socio indicado.");
+            console.log(error);
+        }
     });
 
 });
