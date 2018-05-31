@@ -51,7 +51,7 @@ connection.connect(function (err) {
 /*    API SOCIOS       */
 /***********************/
 app.get('/api/socios', (req, res) => {
-    connection.query("SELECT * FROM socios", (err, data) => {
+    connection.query("SELECT s.*, u.profile_image FROM socios s, usuarios u where u.email = s.email", (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
@@ -62,7 +62,7 @@ app.get('/api/socios', (req, res) => {
 
 app.get('/api/socios/:id', (req, res) => {
     let id_socio = req.params.id;
-    connection.query(`SELECT * FROM socios where id_socio = '${id_socio}'`, (err, data) => {
+    connection.query(`SELECT s.*, u.profile_image FROM socios s, usuarios u where id_socio = '${id_socio}' and u.email = s.email`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
@@ -72,10 +72,11 @@ app.get('/api/socios/:id', (req, res) => {
 });
 
 app.post('/api/socios', (req, res) => {
-    const values = `'${req.body.nombre}', '${req.body.apellidos}', '${req.body.direccion}',
-                    '${req.body.fecha_alta}', '${req.body.fecha_baja}', ${req.body.telefono},
-                    null, '${req.body.email}'`;
-    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', 'delonet', 0)`, (err, data) => {
+    const values = `'${req.body.nombre}', '${req.body.apellidos}', '${req.body.direccion}', 
+                    '${req.body.fecha_alta}', '${req.body.fecha_baja}',
+                     ${req.body.telefono}, null, '${req.body.email}'`;
+    
+    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', 'delonet', 0, '${req.body.profile_image}')`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
@@ -91,9 +92,56 @@ app.post('/api/socios', (req, res) => {
 });
 
 app.delete('/api/socios/:id', (req, res) => {
+    const id_socio = req.params.id;
+    let email;
+    connection.query(`SELECT email FROM socios WHERE id_socio = '${id_socio}'`, (err, data ) => {
+        if (err) {
+            res.status(404).json({message: err});
+        } else {
+            email = data[0].email;
+            connection.query(`DELETE FROM socios WHERE id_socio = '${id_socio}'`, (err2, data2) => {
+                if (err2) {
+                    res.status(404).json({message: err2});
+                } else {
+                    connection.query(`DELETE FROM usuarios WHERE email = '${email}'`, (err3, data3) => {
+                        if (err3) {
+                            res.status(404).json({message: err3});
+                        } else {
+                            res.status(200).send(data3);
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
+app.put('/api/socios/:id', function (req, res) {
     var id_socio = req.params.id;
-    connection.query(`DELETE FROM socios WHERE id_socio = '${id_socio}'`, (err, data ) => {
-        if (error) {
+    const values = `s.nombre = '${req.body.nombre}',
+                    s.apellidos =  '${req.body.apellidos}', 
+                    s.direccion = '${req.body.direccion}', 
+                    s.fecha_alta = '${req.body.fecha_alta}', 
+                    s.fecha_baja = '${req.body.fecha_baja}', 
+                    s.telefono = ${req.body.telefono}`;
+    const valuesUser = `u.email = '${req.body.email}',
+                        u.profile_image = '${req.body.profile_image}'`;
+    connection.query(`UPDATE usuarios u, socios s SET ${valuesUser}, ${values} WHERE u.email = s.email and s.id_socio = '${id_socio}'`, 
+        (err, data ) => {
+            if (err) {
+                res.status(404).json({message: err});
+            } else {
+                res.status(200).send(data);
+            }
+    });
+});
+
+/***********************/
+/*    API MONITORES    */
+/***********************/
+app.get('/api/monitores', (req, res) => {
+    connection.query("SELECT m.*, u.profile_image FROM monitores m, usuarios u where u.email = m.email", (err, data) => {
+        if (err) {
             res.status(404).json({message: err});
         } else {
             res.status(200).send(data);
@@ -101,22 +149,77 @@ app.delete('/api/socios/:id', (req, res) => {
     });
 });
 
-app.put('/api/socios/:id', function (req, res) {
-    var id_socio = req.params.id;
-    const values = `nombre = '${req.body.nombre}',
-                    apellidos =  '${req.body.apellidos}', 
-                    direccion = '${req.body.direccion}', 
-                    fecha_alta = '${req.body.fecha_alta}', 
-                    fecha_baja = '${req.body.fecha_baja}', 
-                    telefono = ${req.body.telefono}`;
-    connection.query(`UPDATE socios SET ${changeText} WHERE id_socio = '${id_socio}'`, (err, data ) => {
+app.get('/api/monitores/:id', (req, res) => {
+    let id_monitor = req.params.id;
+    connection.query(`SELECT m.*, u.profile_image FROM monitores m, usuarios u where id_monitor = '${id_monitor}' and u.email = m.email`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
             res.status(200).send(data);
         }
     });
+});
 
+app.post('/api/monitores', (req, res) => {
+    const values = `'${req.body.nombre}', '${req.body.apellidos}', '${req.body.direccion}', 
+                     ${req.body.telefono}, '${req.body.email}'`;
+    
+    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', 'delonet', 1, '${req.body.profile_image}')`, (err, data) => {
+        if (err) {
+            res.status(404).json({message: err});
+        } else {
+            connection.query(`INSERT INTO monitores VALUES ('', ${values} )`, (errMonitor, dataMonitor) => {
+                if (dataMonitor) {
+                    res.status(404).json({message: errMonitor});
+                } else {
+                    res.status(200).send(dataMonitor);
+                }
+            });
+        } 
+    })
+});
+
+app.delete('/api/monitores/:id', (req, res) => {
+    const id_monitor = req.params.id;
+    let email;
+    connection.query(`SELECT email FROM monitores WHERE id_monitor = '${id_monitor}'`, (err, data ) => {
+        if (err) {
+            res.status(404).json({message: err});
+        } else {
+            email = data[0].email;
+            connection.query(`DELETE FROM monitores WHERE id_monitor = '${id_monitor}'`, (err2, data2) => {
+                if (err2) {
+                    res.status(404).json({message: err2});
+                } else {
+                    connection.query(`DELETE FROM usuarios WHERE email = '${email}'`, (err3, data3) => {
+                        if (err3) {
+                            res.status(404).json({message: err3});
+                        } else {
+                            res.status(200).send(data3);
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
+app.put('/api/monitores/:id', function (req, res) {
+    var id_monitor = req.params.id;
+    const values = `m.nombre = '${req.body.nombre}',
+                    m.apellidos =  '${req.body.apellidos}', 
+                    m.direccion = '${req.body.direccion}', 
+                    m.telefono = ${req.body.telefono}`;
+    const valuesUser = `u.email = '${req.body.email}',
+                        u.profile_image = '${req.body.profile_image}'`;
+    connection.query(`UPDATE usuarios u, monitores m SET ${valuesUser}, ${values} WHERE u.email = m.email and m.id_monitor = '${id_monitor}'`, 
+        (err, data ) => {
+            if (err) {
+                res.status(404).json({message: err});
+            } else {
+                res.status(200).send(data);
+            }
+    });
 });
 
 /***********************/
@@ -184,6 +287,38 @@ app.put('/api/clases/:id', (req, res) => {
 });
 
 /***********************/
+/*    API RESERVAS     */
+/***********************/
+app.get('/api/reservas', (req, res) => {
+    let reservas = [];
+    connection.query("SELECT * FROM reservas order by id_calle ASC", (err, data) => {
+        if (err) {
+            res.status(404).json({message: err});
+        } else {
+            data.forEach(element => {
+                if (!reservas[element.id_calle - 1]) {
+                    reservas[element.id_calle - 1] = new Array();
+                }
+                reservas[element.id_calle - 1].push(element);
+            });
+            res.status(200).send(reservas);
+        }
+    });
+});
+
+app.post('/api/reservas', (req, res) => {
+    const values = `${req.body.id_socio}, ${req.body.id_calle}, ${req.body.id_clase}, 
+                    '${req.body.fecha}'`;
+    connection.query(`INSERT INTO reservas VALUES ('', ${values}, null)`, (err, data) => {
+        if (err) {
+            res.status(404).json({message: err});
+        } else {
+            res.status(200).send(data);
+        }
+    });
+});
+
+/***********************/
 /*    API CALLES       */
 /***********************/
 app.get('/api/calles', (req, res) => {
@@ -199,69 +334,6 @@ app.get('/api/calles', (req, res) => {
 app.get('/api/calles/:id', (req, res) => {
     let id_calle = req.params.id;
     connection.query(`SELECT * FROM calles WHERE id_calle = '${id_calle}'`, (err, data) => {
-        if (err) {
-            res.status(404).json({message: err});
-        } else {
-            res.status(200).send(data);
-        }
-    });
-});
-
-/***********************/
-/*    API MONITORES    */
-/***********************/
-app.get('/api/monitores', (req, res) => {
-    connection.query("SELECT * FROM monitores", (err, data) => {
-        if (err) {
-            res.status(404).json({message: err});
-        } else {
-            res.status(200).send(data);
-        }
-    });
-});
-
-app.get('/api/monitores/:id', (req, res) => {
-    let id_monitor = req.params.id;
-    connection.query(`SELECT * FROM monitores WHERE id_monitor = '${id_monitor}'`, (err, data) => {
-        if (err) {
-            res.status(404).json({message: err});
-        } else {
-            res.status(200).send(data);
-        }
-    });
-});
-
-app.post('/api/monitores', (req, res) => {
-    const values = `'${req.body.nombre}', '${req.body.apellidos}', '${req.body.direccion}',
-                    ${req.body.telefono}, '${req.body.email}'`;
-    connection.query(`INSERT INTO monitores VALUES ('', ${values} )`, (err, data) => {
-        if (err) {
-            res.status(404).json({message: err});
-        } else {
-            res.status(200).send(data);
-        }
-    });
-});
-
-app.put('/api/monitores/:id', (req, res) => {
-    var id_monitor = req.params.id;
-    const values = `nombre = '${req.body.nombre}', 
-                    apellidos = '${req.body.apellidos}', 
-                    direccion = '${req.body.direccion}',
-                    telefono = ${req.body.telefono}, 
-                    email = '${req.body.email}'`;
-    connection.query(`UPDATE monitores SET ${changeText} WHERE id_monitor = '${id_monitor}'`, (err, data ) => {
-        if (err) {
-            res.status(404).json({message: err});
-        } else {
-            res.status(200).send(data);
-        }
-    });
-});
-
-app.delete('/api/monitores/:id', (req, res) => {
-    var id_monitor = req.params.id;
-    connection.query(`DELETE FROM monitores WHERE id_monitor = '${id_monitor}'`, (err, data ) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
