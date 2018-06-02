@@ -292,17 +292,20 @@ app.put('/api/clases/:id', (req, res) => {
 /*    API RESERVAS     */
 /***********************/
 app.get('/api/reservas', (req, res) => {
-    // para que no sea null si no hay reservas para esa calle
-    let reservas = [[],[],[],[],[],[]];
-    connection.query("SELECT * FROM reservas order by id_calle ASC", (err, data) => {
+    let reservas = [
+        { lane: '1', events: [] },
+        { lane: '2', events: [] },
+        { lane: '3', events: [] },
+        { lane: '4', events: [] },
+        { lane: '5', events: [] },
+        { lane: '6', events: [] }
+    ];
+    connection.query("SELECT id_calle, id_reserva, nombre, fecha FROM reservas s, clases c where s.id_clase = c.id_clase order by id_calle ASC", (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
             data.forEach(element => {
-                if (!reservas[element.id_calle - 1]) {
-                    reservas[element.id_calle - 1] = new Array();
-                }
-                reservas[element.id_calle - 1].push(element);
+                reservas[element.id_calle - 1].events.push(element);
             });
             res.status(200).send(reservas);
         }

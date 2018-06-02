@@ -199,8 +199,8 @@ VALUES ('Aquagym', 10, null, 'Principiante', '20:30:00', 'Viernes'),
 ('Natación Iniciación', 10, null, 'Principiante', '18:30:00', 'Martes, Jueves'),
 ('Natación Iniciación', 10, null, 'Principiante', '19:30:00', 'Martes, Jueves'),
 ('Natación Iniciación', 10, null, 'Principiante', '20:30:00', 'Martes, Jueves'),
-('Natación Avanzado', 10, null, 'Avanzado', '18:30:00', 'Lunes, Miércoles'),
-('Natación Avanzado', 10, null, 'Avanzado', '19:30:00', 'Lunes, Miércoles');
+('Natación Avanzada', 10, null, 'Avanzado', '18:30:00', 'Lunes, Miércoles'),
+('Natación Avanzada', 10, null, 'Avanzado', '19:30:00', 'Lunes, Miércoles');
 
 
 /***********************/
