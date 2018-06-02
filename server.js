@@ -30,16 +30,18 @@ app.listen(port, host, () => {
 /*****************************************/
 var connection = mysql.createConnection({
     host: databaseConf['host'],
+    port: databaseConf['port'],
     user: databaseConf['user'],
     password: databaseConf['password'],
-    database: databaseConf['database']
+    database: databaseConf['database'],
+    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
 });
 
 connection.connect(function (err) {
     if (err) {
         console.log("Error: No se ha podido conectar con la base de datos! ¿Estas utilizando XAMPP?", err);
     } else {
-        console.log("Connected in database: " + databaseConf['database']);
+        console.log("Connected to database: " + databaseConf['database']);
     }
 });
 
