@@ -30,9 +30,11 @@ app.listen(port, host, () => {
 /*****************************************/
 var connection = mysql.createConnection({
     host: databaseConf['host'],
+    port: databaseConf['port'],
     user: databaseConf['user'],
     password: databaseConf['password'],
-    database: databaseConf['database']
+    database: databaseConf['database'],
+    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
 });
 
 connection.connect(function (err) {
@@ -351,7 +353,7 @@ app.get('/api/reservas', (req, res) => {
 app.post('/api/reservas', (req, res) => {
     const values = `${req.body.id_socio}, ${req.body.id_calle}, ${req.body.id_clase}, 
                     '${req.body.fecha}'`;
-    connection.query(`INSERT INTO reservas VALUES ('', ${values}, null)`, (err, data) => {
+    connection.query(`INSERT INTO reservas VALUES ('', ${values})`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
