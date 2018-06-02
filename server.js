@@ -30,16 +30,18 @@ app.listen(port, host, () => {
 /*****************************************/
 var connection = mysql.createConnection({
     host: databaseConf['host'],
+    port: databaseConf['port'],
     user: databaseConf['user'],
     password: databaseConf['password'],
-    database: databaseConf['database']
+    database: databaseConf['database'],
+    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
 });
 
 connection.connect(function (err) {
     if (err) {
         console.log("Error: No se ha podido conectar con la base de datos! ¿Estas utilizando XAMPP?", err);
     } else {
-        console.log("Connected in database: " + databaseConf['database']);
+        console.log("Connected to database: " + databaseConf['database']);
     }
 });
 
@@ -226,9 +228,7 @@ app.put('/api/monitores/:id', function (req, res) {
 /*    API CLASES       */
 /***********************/
 app.get('/api/clases', (req, res) => {
-    const consulta = `SELECT c.*, GROUP_CONCAT(id_monitor) as monitores FROM clases c, clasesMonitores cm WHERE c.id_clase = cm.id_clase GROUP BY
-                      cm.id_clase ORDER BY c.id_clase`;
-    connection.query(`${consulta}`, (err, data) => {
+    connection.query("SELECT * FROM clases", (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
@@ -239,9 +239,7 @@ app.get('/api/clases', (req, res) => {
 
 app.get('/api/clases/:id', (req, res) => {
     let id_clase = req.params.id;
-    const consulta = `SELECT c.*, GROUP_CONCAT(id_monitor) as monitores FROM clases c, clasesMonitores cm WHERE c.id_clase = '${id_clase}'
-                     and  c.id_clase = cm.id_clase GROUP BY cm.id_clase ORDER BY c.id_clase`;
-    connection.query(`${consulta}`, (err, data) => {
+    connection.query(`SELECT * FROM clases WHERE id_clase = '${id_clase}'`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
@@ -252,37 +250,19 @@ app.get('/api/clases/:id', (req, res) => {
 
 app.post('/api/clases', (req, res) => {
     const values = `'${req.body.nombre}', ${req.body.num_plazas}, ${req.body.edad_maxima},
-    '${req.body.nivel}', '${req.body.hora}', '${req.body.dias}'`;
-    const monitores = req.body.monitores.split(',');
+    '${req.body.nivel}', '${req.body.hora}', ${req.body.dias}`;
     connection.query(`INSERT INTO clases VALUES ('', ${values} )`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
-            connection.query(`SELECT id_clase FROM clases ORDER BY id_clase DESC LIMIT 1`, (err, data) => {
-                if (err) {
-                    res.status(404).json({message: err});
-                } else {
-                    const id_clase = data[0]['id_clase'];
-                    monitores.forEach(monitor => {
-                        connection.query(`INSERT INTO clasesMonitores VALUES ('${monitor}', '${id_clase}')`, (err3, data3) => {
-                            if (err3) {
-                                res.status(404).json({message: err3});
-                            }
-                        });
-                    });
-                }
-            })
             res.status(200).send(data);
         }
-});
+    });
 });
 
 app.delete('/api/clases/:id', (req, res) => {
     var id_clase = req.params.id;
-    const borrado = `DELETE c, cm FROM clases c 
-                     JOIN clasesMonitores cm ON cm.id_clase = c.id_clase WHERE 
-                     c.id_clase = '${id_clase}'`;
-    connection.query(`${borrado}`, (err, data ) => {
+    connection.query(`DELETE FROM clases WHERE id_clase = '${id_clase}'`, (err, data ) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
@@ -293,42 +273,27 @@ app.delete('/api/clases/:id', (req, res) => {
 
 app.put('/api/clases/:id', (req, res) => {
     var id_clase = req.params.id;
-    const values = `c.nombre = '${req.body.nombre}', 
-                    c.num_plazas = ${req.body.num_plazas}, 
-                    c.edad_maxima = ${req.body.edad_maxima},
-                    c.nivel = '${req.body.nivel}', 
-                    c.hora = '${req.body.hora}', 
-                    c.dias = '${req.body.dias}'`;
-    const monitores = req.body.monitores.split(',');
-    monitores.forEach(monitor => {
-        connection.query(`DELETE FROM clasesMonitores WHERE id_clase = '${id_clase}'`, (err, data) => {
-            if (err) {
-                res.status(404).json({message: err});
-            } else {
-                connection.query(`UPDATE clases c SET ${values}
-                    WHERE c.id_clase = '${id_clase}'`, (err2, data2) => {
-                        if (err2) {
-                            res.status(404).json({message: err2});
-                        } else {
-                            connection.query(`INSERT INTO clasesMonitores VALUES ('${monitor}', '${id_clase}')`, (err3, data3) => {
-                                if (err3) {
-                                    res.status(404).json({message: err3});
-                                }
-                            });
-                        }
-                });
-            }
-        });
-
+    const values = `nombre = '${req.body.nombre}', 
+                    num_plazas = ${req.body.num_plazas}, 
+                    edad_maxima = ${req.body.edad_maxima},
+                    nivel = '${req.body.nivel}', 
+                    hora = '${req.body.hora}', 
+                    dias = ${req.body.dias}`;
+    connection.query(`UPDATE clases SET ${values} WHERE id_clase = '${id_clase}'`, (err, data ) => {
+        if (err) {
+            res.status(404).json({message: err});
+        } else {
+            res.status(200).send(data);
+        }
     });
-    res.status(200).json({message: 'OK'});
 });
 
 /***********************/
 /*    API RESERVAS     */
 /***********************/
 app.get('/api/reservas', (req, res) => {
-    let reservas = [];
+    // para que no sea null si no hay reservas para esa calle
+    let reservas = [[],[],[],[],[],[]];
     connection.query("SELECT * FROM reservas order by id_calle ASC", (err, data) => {
         if (err) {
             res.status(404).json({message: err});
@@ -347,7 +312,7 @@ app.get('/api/reservas', (req, res) => {
 app.post('/api/reservas', (req, res) => {
     const values = `${req.body.id_socio}, ${req.body.id_calle}, ${req.body.id_clase}, 
                     '${req.body.fecha}'`;
-    connection.query(`INSERT INTO reservas VALUES ('', ${values}, null)`, (err, data) => {
+    connection.query(`INSERT INTO reservas VALUES ('', ${values})`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {

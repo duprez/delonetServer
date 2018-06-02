@@ -37,10 +37,6 @@ CREATE TABLE delonet.clases (
 ) ENGINE=INNODB;
 
 
-
-
-
-
 /***********************/
 /* TABLA: socios       */
 /***********************/
@@ -87,6 +83,8 @@ CREATE TABLE delonet.calles (
  velocidad VARCHAR(30),
  complementos TINYINT(1)
 ) ENGINE=INNODB;
+
+
 /***********************/
 /* TABLA: complementos */
 /***********************/
@@ -105,8 +103,7 @@ CREATE TABLE delonet.reservas (
  id_socio INT(11),
  id_calle INT(11),
  id_clase INT(11),
- fecha DATE,
- hora TIME,
+ fecha DATETIME,
  FOREIGN KEY (id_socio)
  REFERENCES socios(id_socio)
  ON DELETE CASCADE ON UPDATE CASCADE,
@@ -133,6 +130,8 @@ CREATE TABLE delonet.clasesMonitores (
  REFERENCES clases(id_clase)
  ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
+
+
 /***********************/
 /* TABLA: callesClases */
 /***********************/
@@ -164,18 +163,6 @@ CREATE TABLE delonet.complementosClases (
  REFERENCES clases(id_clase)
  ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -216,15 +203,6 @@ VALUES ('Aquagym', 10, null, 'Principiante', '20:30:00', 'Viernes'),
 ('Natación Avanzado', 10, null, 'Avanzado', '19:30:00', 'Lunes, Miércoles');
 
 
-
-
-
-
-
-
-
-
-
 /***********************/
 /* TABLA: socios       */
 /***********************/
@@ -243,9 +221,9 @@ VALUES ('Juan', 'Martin', 'C/ Laujar de Andarax 37, Vicar', '2018/06/02', '2018/
 /***********************/
 
 INSERT INTO monitores (nombre, apellidos, direccion, telefono, email)
-VALUES ('Adrián', 'Roda', 'C/ Ancha 12, Vícar', 612345122, 'adrian@delonet.com'),
-('Laura', 'Alcántara', 'C/ Estrecha 27, Vícar', 678568765, 'laura@delonet.com'),
-('Gabriel', 'Manzano', 'C/ Intermedia 7, Vícar', 609675493, 'gabriel@delonet.com');
+VALUES ('Adrián', 'Roda', 'C/ Ancha 12, Vícar', '612345122', 'adrian@delonet.com'),
+('Laura', 'Alcántara', 'C/ Estrecha 27, Vícar', '678568765', 'laura@delonet.com'),
+('Gabriel', 'Manzano', 'C/ Intermedia 7, Vícar', '609675493', 'gabriel@delonet.com');
 
 
 /***********************/
@@ -259,9 +237,6 @@ VALUES ('Lenta', 1),
 ('Rápida', 0),
 ('Rápida', 1),
 ('Lenta', 0);
-
-
-
 
 
 /***********************/
@@ -282,11 +257,11 @@ VALUES ('Pullboy', 10),
 /* TABLA: reservas     */
 /***********************/
 
-INSERT INTO reservas (id_socio, id_calle, id_clase, fecha, hora)
-VALUES (1, 4, null, '2018/07/01', '17:30:00'),
-(1, 4, null, '2018/07/02', '18:30:00'),
-(null, 1, 7, '2018/07/03', '19:30:00'),
-(null, 2, 7, '2018/07/03', '19:30:00');
+INSERT INTO reservas (id_socio, id_calle, id_clase, fecha)
+VALUES (1, 4, null, '2018-06-03T16:00:00.000Z'),
+(1, 4, null, '2018-06-03T18:00:00.000Z'),
+(null, 1, 7, '2018-06-03T17:00:00.000Z'),
+(null, 2, 7, '2018-06-03T19:00:00.000Z');
 
 
 /***********************/
@@ -299,15 +274,6 @@ VALUES (1, 1),
 (3, 2),
 (2, 5),
 (3, 7);
-
-
-
-
-
-
-
-
-
 
 
 /***********************/
