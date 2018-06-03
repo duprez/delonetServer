@@ -68,7 +68,7 @@ app.get('/api/socios/:id', (req, res) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
-            res.status(200).send(data);
+            res.status(200).send(data[0]);
         }
     });
 });
@@ -157,7 +157,7 @@ app.get('/api/monitores/:id', (req, res) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
-            res.status(200).send(data);
+            res.status(200).send(data[0]);
         }
     });
 });
@@ -381,7 +381,7 @@ app.get('/api/calles/:id', (req, res) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
-            res.status(200).send(data);
+            res.status(200).send(data[0]);
         }
     });
 });
