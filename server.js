@@ -247,7 +247,7 @@ app.get('/api/clases/:id', (req, res) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
-            res.status(200).send(data);
+            res.status(200).send(data[0]);
         }
     });
 });
@@ -338,7 +338,7 @@ app.get('/api/reservas', (req, res) => {
         { lane: '5', events: [] },
         { lane: '6', events: [] }
     ];
-    connection.query("SELECT id_calle, id_reserva, nombre, fecha FROM reservas s, clases c where s.id_clase = c.id_clase order by id_calle ASC", (err, data) => {
+    connection.query("SELECT id_calle, id_reserva, COALESCE(nombre,'Particular') AS nombre, fecha FROM reservas s left join clases c on s.id_clase = c.id_clase order by id_calle ASC", (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {

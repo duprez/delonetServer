@@ -193,14 +193,14 @@ VALUES ('adrian@delonet.com', '123456', 1, ''),
 /***********************/
 
 INSERT INTO clases (nombre, num_plazas, edad_maxima, nivel, hora, dias)
-VALUES ('Aquagym', 10, null, 'Principiante', '20:30:00', 'Viernes'),
-('Natación Infantil', 10, 10, 'Principiante', '16:30:00', 'Lunes, Miércoles'),
-('Natación Infantil', 10, 10, 'Principiante', '17:30:00', 'Lunes, Miércoles'),
-('Natación Iniciación', 10, null, 'Principiante', '18:30:00', 'Martes, Jueves'),
-('Natación Iniciación', 10, null, 'Principiante', '19:30:00', 'Martes, Jueves'),
-('Natación Iniciación', 10, null, 'Principiante', '20:30:00', 'Martes, Jueves'),
-('Natación Avanzada', 10, null, 'Avanzado', '18:30:00', 'Lunes, Miércoles'),
-('Natación Avanzada', 10, null, 'Avanzado', '19:30:00', 'Lunes, Miércoles');
+VALUES ('Aquagym', 10, null, 'Principiante', '20:00:00', 'Viernes'),
+('Natación Infantil', 10, 10, 'Principiante', '16:00:00', 'Lunes, Miércoles'),
+('Natación Infantil', 10, 10, 'Principiante', '17:00:00', 'Lunes, Miércoles'),
+('Natación Iniciación', 10, null, 'Principiante', '18:00:00', 'Martes, Jueves'),
+('Natación Iniciación', 10, null, 'Principiante', '19:00:00', 'Martes, Jueves'),
+('Natación Iniciación', 10, null, 'Principiante', '20:00:00', 'Martes, Jueves'),
+('Natación Avanzada', 10, null, 'Avanzado', '18:00:00', 'Lunes, Miércoles'),
+('Natación Avanzada', 10, null, 'Avanzado', '19:00:00', 'Lunes, Miércoles');
 
 
 /***********************/
@@ -271,9 +271,12 @@ VALUES (1, 4, null, '2018-06-03T16:00:00.000Z'),
 INSERT INTO clasesMonitores (id_monitor, id_clase)
 VALUES (1, 1),
 (2, 2),
-(3, 2),
-(2, 5),
-(3, 7);
+(2, 3),
+(3, 4),
+(3, 5),
+(3, 6),
+(1, 7),
+(1, 8);
 
 
 /***********************/
