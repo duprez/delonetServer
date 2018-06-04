@@ -399,8 +399,8 @@ app.post('/api/sessions', (req, res) => {
         } else if (data.length < 1) {
             res.status(404).json({message: 'Usuario no encontrado'});
         } else {
-            connection.query(`SELECT u.email, u.profile_image, u.is_admin, s.id_socio, s.nombre as snombre, 
-            m.nombre as mnombre, m.id_monitor FROM usuarios u 
+            connection.query(`SELECT u.email, u.profile_image, u.is_admin, s.id_socio, s.nombre as s_nombre, 
+            m.nombre as m_nombre, m.id_monitor FROM usuarios u 
             left join socios s on u.email = s.email left join monitores m on u.email = m.email 
             WHERE u.email = '${email}' and u.passwrd = '${password}'`, (err, data) => {
                 if (err) {
