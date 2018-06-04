@@ -413,14 +413,14 @@ app.post('/api/sessions', (req, res) => {
                         response = {
                             email: data[0].email,
                             id_socio: data[0].id_socio,
-                            nombre: data[0].snombre,
+                            nombre: data[0].s_nombre,
                             profile_image: data[0].profile_image
                         }
                     } else {
                         response = {
                             email: data[0].email,
                             id_monitor: data[0].id_monitor,
-                            nombre: data[0].mnombre,
+                            nombre: data[0].m_nombre,
                             profile_image: data[0].profile_image
                         }
                     }
