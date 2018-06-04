@@ -66,7 +66,7 @@ app.get('/api/socios/:id', (req, res) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
-            res.status(200).send(data);
+            res.status(200).send(data[0]);
         }
     });
 });
@@ -155,7 +155,7 @@ app.get('/api/monitores/:id', (req, res) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
-            res.status(200).send(data);
+            res.status(200).send(data[0]);
         }
     });
 });
@@ -245,7 +245,7 @@ app.get('/api/clases/:id', (req, res) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
-            res.status(200).send(data);
+            res.status(200).send(data[0]);
         }
     });
 });
@@ -328,16 +328,20 @@ app.put('/api/clases/:id', (req, res) => {
 /*    API RESERVAS     */
 /***********************/
 app.get('/api/reservas', (req, res) => {
-    let reservas = [];
-    connection.query("SELECT * FROM reservas order by id_calle ASC", (err, data) => {
+    let reservas = [
+        { lane: '1', events: [] },
+        { lane: '2', events: [] },
+        { lane: '3', events: [] },
+        { lane: '4', events: [] },
+        { lane: '5', events: [] },
+        { lane: '6', events: [] }
+    ];
+    connection.query("SELECT id_calle, id_reserva, COALESCE(nombre,'Particular') AS nombre, fecha FROM reservas s left join clases c on s.id_clase = c.id_clase order by id_calle ASC", (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
             data.forEach(element => {
-                if (!reservas[element.id_calle - 1]) {
-                    reservas[element.id_calle - 1] = new Array();
-                }
-                reservas[element.id_calle - 1].push(element);
+                reservas[element.id_calle - 1].events.push(element);
             });
             res.status(200).send(reservas);
         }
@@ -347,7 +351,7 @@ app.get('/api/reservas', (req, res) => {
 app.post('/api/reservas', (req, res) => {
     const values = `${req.body.id_socio}, ${req.body.id_calle}, ${req.body.id_clase}, 
                     '${req.body.fecha}'`;
-    connection.query(`INSERT INTO reservas VALUES ('', ${values}, null)`, (err, data) => {
+    connection.query(`INSERT INTO reservas VALUES ('', ${values})`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
@@ -375,7 +379,7 @@ app.get('/api/calles/:id', (req, res) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
-            res.status(200).send(data);
+            res.status(200).send(data[0]);
         }
     });
 });
