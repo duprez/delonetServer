@@ -30,9 +30,11 @@ app.listen(port, host, () => {
 /*****************************************/
 var connection = mysql.createConnection({
     host: databaseConf['host'],
+    port: databaseConf['port'],
     user: databaseConf['user'],
     password: databaseConf['password'],
-    database: databaseConf['database']
+    database: databaseConf['database'],
+    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
 });
 
 connection.connect(function (err) {
@@ -380,6 +382,51 @@ app.get('/api/calles/:id', (req, res) => {
             res.status(404).json({message: err});
         } else {
             res.status(200).send(data[0]);
+        }
+    });
+});
+
+/***********************/
+/*    API LOGIN        */
+/***********************/
+
+app.post('/api/sessions', (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    connection.query(`SELECT * FROM usuarios WHERE email = '${email}'`, (err, data) => {
+        if (err) {
+            res.status(404).json({message: err});
+        } else if (data.length < 1) {
+            res.status(404).json({message: 'Usuario no encontrado'});
+        } else {
+            connection.query(`SELECT u.email, u.profile_image, u.is_admin, s.id_socio, s.nombre as snombre, 
+            m.nombre as mnombre, m.id_monitor FROM usuarios u 
+            left join socios s on u.email = s.email left join monitores m on u.email = m.email 
+            WHERE u.email = '${email}' and u.passwrd = '${password}'`, (err, data) => {
+                if (err) {
+                    res.status(404).json({message: err});
+                } else if (data.length < 1) {
+                    res.status(404).json({message: 'Contraseña incorrecta'});
+                } else {
+                    let response;
+                    if (!data[0].is_admin) {
+                        response = {
+                            email: data[0].email,
+                            id_socio: data[0].id_socio,
+                            nombre: data[0].snombre,
+                            profile_image: data[0].profile_image
+                        }
+                    } else {
+                        response = {
+                            email: data[0].email,
+                            id_monitor: data[0].id_monitor,
+                            nombre: data[0].mnombre,
+                            profile_image: data[0].profile_image
+                        }
+                    }
+                    res.status(200).send(response);
+                }
+            });
         }
     });
 });
