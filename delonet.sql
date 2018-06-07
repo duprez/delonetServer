@@ -103,8 +103,7 @@ CREATE TABLE delonet.reservas (
  id_socio INT(11),
  id_calle INT(11),
  id_clase INT(11),
- fecha DATE,
- hora TIME,
+ fecha DATETIME,
  FOREIGN KEY (id_socio)
  REFERENCES socios(id_socio)
  ON DELETE CASCADE ON UPDATE CASCADE,
@@ -194,14 +193,14 @@ VALUES ('adrian@delonet.com', '123456', 1, ''),
 /***********************/
 
 INSERT INTO clases (nombre, num_plazas, edad_maxima, nivel, hora, dias)
-VALUES ('Aquagym', 10, null, 'Principiante', '20:30:00', 'Viernes'),
-('Natación Infantil', 10, 10, 'Principiante', '16:30:00', 'Lunes, Miércoles'),
-('Natación Infantil', 10, 10, 'Principiante', '17:30:00', 'Lunes, Miércoles'),
-('Natación Iniciación', 10, null, 'Principiante', '18:30:00', 'Martes, Jueves'),
-('Natación Iniciación', 10, null, 'Principiante', '19:30:00', 'Martes, Jueves'),
-('Natación Iniciación', 10, null, 'Principiante', '20:30:00', 'Martes, Jueves'),
-('Natación Avanzado', 10, null, 'Avanzado', '18:30:00', 'Lunes, Miércoles'),
-('Natación Avanzado', 10, null, 'Avanzado', '19:30:00', 'Lunes, Miércoles');
+VALUES ('Aquagym', 10, null, 'Principiante', '20:00:00', 'Viernes'),
+('Natación Infantil', 10, 10, 'Principiante', '16:00:00', 'Lunes, Miércoles'),
+('Natación Infantil', 10, 10, 'Principiante', '17:00:00', 'Lunes, Miércoles'),
+('Natación Iniciación', 10, null, 'Principiante', '18:00:00', 'Martes, Jueves'),
+('Natación Iniciación', 10, null, 'Principiante', '19:00:00', 'Martes, Jueves'),
+('Natación Iniciación', 10, null, 'Principiante', '20:00:00', 'Martes, Jueves'),
+('Natación Avanzada', 10, null, 'Avanzado', '18:00:00', 'Lunes, Miércoles'),
+('Natación Avanzada', 10, null, 'Avanzado', '19:00:00', 'Lunes, Miércoles');
 
 
 /***********************/
@@ -258,11 +257,11 @@ VALUES ('Pullboy', 10),
 /* TABLA: reservas     */
 /***********************/
 
-INSERT INTO reservas (id_socio, id_calle, id_clase, fecha, hora)
-VALUES (1, 4, null, '2018/07/01', '17:30:00'),
-(1, 4, null, '2018/07/02', '18:30:00'),
-(null, 1, 7, '2018/07/03', '19:30:00'),
-(null, 2, 7, '2018/07/03', '19:30:00');
+INSERT INTO reservas (id_socio, id_calle, id_clase, fecha)
+VALUES (1, 4, null, '2018-06-03T16:00:00.000Z'),
+(1, 4, null, '2018-06-03T18:00:00.000Z'),
+(null, 1, 7, '2018-06-03T17:00:00.000Z'),
+(null, 2, 7, '2018-06-03T19:00:00.000Z');
 
 
 /***********************/
@@ -272,9 +271,12 @@ VALUES (1, 4, null, '2018/07/01', '17:30:00'),
 INSERT INTO clasesMonitores (id_monitor, id_clase)
 VALUES (1, 1),
 (2, 2),
-(3, 2),
-(2, 5),
-(3, 7);
+(2, 3),
+(3, 4),
+(3, 5),
+(3, 6),
+(1, 7),
+(1, 8);
 
 
 /***********************/
