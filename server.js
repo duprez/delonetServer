@@ -13,8 +13,8 @@ const cors = require('cors');
 /******************************/
 /*    CREAMOS EL SERVIDOR    */
 /*****************************/ 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 
 const host = serverConf['host'];
@@ -72,8 +72,6 @@ app.get('/api/socios/:id', (req, res) => {
 });
 
 app.post('/api/socios', (req, res) => {
-    const profile_image = req.body.profile_image;
-    console.log(profile_image);
     const values = `'${req.body.nombre}', '${req.body.apellidos}', '${req.body.direccion}', 
                     '${req.body.fecha_alta}', '${req.body.fecha_baja}',
                      ${req.body.telefono}, ${req.body.id_clase}, '${req.body.email}'`;
@@ -120,6 +118,8 @@ app.delete('/api/socios/:id', (req, res) => {
 
 app.put('/api/socios/:id', function (req, res) {
     var id_socio = req.params.id;
+    const profile_image = req.body.profile_image;
+    console.log(profile_image);
     const values = `s.nombre = '${req.body.nombre}',
                     s.apellidos =  '${req.body.apellidos}', 
                     s.direccion = '${req.body.direccion}', 
