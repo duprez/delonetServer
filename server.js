@@ -30,11 +30,9 @@ app.listen(port, host, () => {
 /*****************************************/
 var connection = mysql.createConnection({
     host: databaseConf['host'],
-    port: databaseConf['port'],
     user: databaseConf['user'],
     password: databaseConf['password'],
-    database: databaseConf['database'],
-    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+    database: databaseConf['database']
 });
 
 connection.connect(function (err) {
@@ -74,6 +72,8 @@ app.get('/api/socios/:id', (req, res) => {
 });
 
 app.post('/api/socios', (req, res) => {
+    const profile_image = req.body.profile_image;
+    console.log(profile_image);
     const values = `'${req.body.nombre}', '${req.body.apellidos}', '${req.body.direccion}', 
                     '${req.body.fecha_alta}', '${req.body.fecha_baja}',
                      ${req.body.telefono}, ${req.body.id_clase}, '${req.body.email}'`;
