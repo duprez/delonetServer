@@ -250,6 +250,19 @@ app.get('/api/clases/:id', (req, res) => {
     });
 });
 
+app.get('/api/clases-socios/:id', (req, res) => {
+    let id_clase = req.params.id;
+    const consulta = `SELECT c.*, s.* FROM clases c, socios s WHERE c.id_clase = '${id_clase}'
+                     and c.id_clase = s.id_clase GROUP BY c.id_clase, s.id_socio`;
+    connection.query(`${consulta}`, (err, data) => {
+        if (err) {
+            res.status(404).json({message: err});
+        } else {
+            res.status(200).send(data);
+        }
+    });
+});
+
 app.post('/api/clases', (req, res) => {
     const values = `'${req.body.nombre}', ${req.body.num_plazas}, ${req.body.edad_maxima},
     '${req.body.nivel}', '${req.body.hora}', '${req.body.dias}'`;
