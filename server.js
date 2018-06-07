@@ -74,7 +74,7 @@ app.get('/api/socios/:id', (req, res) => {
 app.post('/api/socios', (req, res) => {
     const values = `'${req.body.nombre}', '${req.body.apellidos}', '${req.body.direccion}', 
                     '${req.body.fecha_alta}', '${req.body.fecha_baja}',
-                     ${req.body.telefono}, null, '${req.body.email}'`;
+                     ${req.body.telefono}, ${req.body.id_clase}, '${req.body.email}'`;
     
     connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', 'delonet', 0, '${req.body.profile_image}')`, (err, data) => {
         if (err) {
@@ -123,7 +123,8 @@ app.put('/api/socios/:id', function (req, res) {
                     s.direccion = '${req.body.direccion}', 
                     s.fecha_alta = '${req.body.fecha_alta}', 
                     s.fecha_baja = '${req.body.fecha_baja}', 
-                    s.telefono = ${req.body.telefono}`;
+                    s.telefono = ${req.body.telefono},
+                    s.id_clase = ${req.body.id_clase}`;
     const valuesUser = `u.email = '${req.body.email}',
                         u.profile_image = '${req.body.profile_image}'`;
     connection.query(`UPDATE usuarios u, socios s SET ${valuesUser}, ${values} WHERE u.email = s.email and s.id_socio = '${id_socio}'`, 
