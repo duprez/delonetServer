@@ -252,7 +252,8 @@ app.get('/api/clases/:id', (req, res) => {
 
 app.get('/api/clases-socios/:id', (req, res) => {
     let id_clase = req.params.id;
-    const consulta = `SELECT c.*, s.* FROM clases c, socios s WHERE c.id_clase = '${id_clase}'
+    const consulta = `SELECT c.nombre as nombre_clase, c.nivel, c.id_clase, c.hora, c.dias, 
+                     s.* FROM clases c, socios s WHERE c.id_clase = '${id_clase}'
                      and c.id_clase = s.id_clase GROUP BY c.id_clase, s.id_socio`;
     connection.query(`${consulta}`, (err, data) => {
         if (err) {
