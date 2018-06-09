@@ -19,7 +19,7 @@ CREATE TABLE delonet.usuarios (
  email VARCHAR(50) PRIMARY KEY,
  passwrd VARCHAR(30),
  is_admin TINYINT(1),
- profile_image VARCHAR(100)
+ profile_image LONGTEXT
 ) ENGINE=INNODB;
 
 
