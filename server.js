@@ -13,8 +13,8 @@ const cors = require('cors');
 /******************************/
 /*    CREAMOS EL SERVIDOR    */
 /*****************************/ 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 
 const host = serverConf['host'];
@@ -30,11 +30,9 @@ app.listen(port, host, () => {
 /*****************************************/
 var connection = mysql.createConnection({
     host: databaseConf['host'],
-    port: databaseConf['port'],
     user: databaseConf['user'],
     password: databaseConf['password'],
-    database: databaseConf['database'],
-    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+    database: databaseConf['database']
 });
 
 connection.connect(function (err) {
@@ -77,8 +75,15 @@ app.post('/api/socios', (req, res) => {
     const values = `'${req.body.nombre}', '${req.body.apellidos}', '${req.body.direccion}', 
                     '${req.body.fecha_alta}', '${req.body.fecha_baja}',
                      ${req.body.telefono}, ${req.body.id_clase}, '${req.body.email}'`;
-    
-    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', 'delonet', 0, '${req.body.profile_image}')`, (err, data) => {
+
+    const profile_image = req.body.profile_image ? req.body.profile_image : null;
+    let image = null;
+    if (profile_image && profile_image !== null) {
+        const image_parts = profile_image.split(',');
+        image = '\'' + image_parts[1] + '\'';
+    }
+
+    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', 'delonet', 0, ${image})`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
@@ -95,25 +100,11 @@ app.post('/api/socios', (req, res) => {
 
 app.delete('/api/socios/:id', (req, res) => {
     const id_socio = req.params.id;
-    let email;
-    connection.query(`SELECT email FROM socios WHERE id_socio = '${id_socio}'`, (err, data ) => {
+    connection.query(`DELETE s, u FROM socios s JOIN usuarios u ON u.email = s.email WHERE s.id_socio = '${id_socio}'`, (err, data ) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
-            email = data[0].email;
-            connection.query(`DELETE FROM socios WHERE id_socio = '${id_socio}'`, (err2, data2) => {
-                if (err2) {
-                    res.status(404).json({message: err2});
-                } else {
-                    connection.query(`DELETE FROM usuarios WHERE email = '${email}'`, (err3, data3) => {
-                        if (err3) {
-                            res.status(404).json({message: err3});
-                        } else {
-                            res.status(200).send(data3);
-                        }
-                    });
-                }
-            });
+           res.status(200).send(data);
         }
     });
 });
@@ -127,8 +118,22 @@ app.put('/api/socios/:id', function (req, res) {
                     s.fecha_baja = '${req.body.fecha_baja}', 
                     s.telefono = ${req.body.telefono},
                     s.id_clase = ${req.body.id_clase}`;
-    const valuesUser = `u.email = '${req.body.email}',
-                        u.profile_image = '${req.body.profile_image}'`;
+
+    const profile_image = req.body.profile_image ? req.body.profile_image : null;
+    let image = null;
+    if (profile_image && profile_image !== null) {
+        const image_parts = profile_image.split(',');
+        image = image_parts[1];
+    }
+    let valuesUser;
+    if (image !== null) {
+        valuesUser = `u.email = '${req.body.email}',
+                    u.profile_image = '${image}'`;
+    } else {
+        valuesUser = `u.email = '${req.body.email}',
+                    u.profile_image = ${image}`;
+    }
+
     connection.query(`UPDATE usuarios u, socios s SET ${valuesUser}, ${values} WHERE u.email = s.email and s.id_socio = '${id_socio}'`, 
         (err, data ) => {
             if (err) {
@@ -165,14 +170,20 @@ app.get('/api/monitores/:id', (req, res) => {
 
 app.post('/api/monitores', (req, res) => {
     const values = `'${req.body.nombre}', '${req.body.apellidos}', '${req.body.direccion}', 
-                     ${req.body.telefono}, '${req.body.email}'`;
+                     '${req.body.telefono}', '${req.body.email}'`;
     
-    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', 'delonet', 1, '${req.body.profile_image}')`, (err, data) => {
+    const profile_image = req.body.profile_image ? req.body.profile_image : null;
+    let image = null;
+    if (profile_image && profile_image !== null) {
+        const image_parts = profile_image.split(',');
+        image = '\'' + image_parts[1] + '\'';
+    }
+    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', 'delonet', 1, ${image})`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
             connection.query(`INSERT INTO monitores VALUES ('', ${values} )`, (errMonitor, dataMonitor) => {
-                if (dataMonitor) {
+                if (errMonitor) {
                     res.status(404).json({message: errMonitor});
                 } else {
                     res.status(200).send(dataMonitor);
@@ -184,25 +195,11 @@ app.post('/api/monitores', (req, res) => {
 
 app.delete('/api/monitores/:id', (req, res) => {
     const id_monitor = req.params.id;
-    let email;
-    connection.query(`SELECT email FROM monitores WHERE id_monitor = '${id_monitor}'`, (err, data ) => {
+    connection.query(`DELETE m, u FROM monitores m JOIN usuarios u ON u.email = m.email WHERE m.id_monitor = '${id_monitor}'`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
-            email = data[0].email;
-            connection.query(`DELETE FROM monitores WHERE id_monitor = '${id_monitor}'`, (err2, data2) => {
-                if (err2) {
-                    res.status(404).json({message: err2});
-                } else {
-                    connection.query(`DELETE FROM usuarios WHERE email = '${email}'`, (err3, data3) => {
-                        if (err3) {
-                            res.status(404).json({message: err3});
-                        } else {
-                            res.status(200).send(data3);
-                        }
-                    });
-                }
-            });
+            res.status(200).send(data);
         }
     });
 });
@@ -213,8 +210,21 @@ app.put('/api/monitores/:id', function (req, res) {
                     m.apellidos =  '${req.body.apellidos}', 
                     m.direccion = '${req.body.direccion}', 
                     m.telefono = ${req.body.telefono}`;
-    const valuesUser = `u.email = '${req.body.email}',
-                        u.profile_image = '${req.body.profile_image}'`;
+
+    const profile_image = req.body.profile_image ? req.body.profile_image : null;
+    let image = null;
+    if (profile_image && profile_image !== null) {
+        const image_parts = profile_image.split(',');
+        image = image_parts[1];
+    }
+    let valuesUser;
+    if (image !== null) {
+        valuesUser = `u.email = '${req.body.email}',
+                    u.profile_image = '${image}'`;
+    } else {
+        valuesUser = `u.email = '${req.body.email}',
+                    u.profile_image = ${image}`;
+    }
     connection.query(`UPDATE usuarios u, monitores m SET ${valuesUser}, ${values} WHERE u.email = m.email and m.id_monitor = '${id_monitor}'`, 
         (err, data ) => {
             if (err) {
@@ -280,30 +290,43 @@ app.get('/api/clases/:id/add-member', (req, res) => {
 });
 
 app.post('/api/clases', (req, res) => {
+    let error = '';
     const values = `'${req.body.nombre}', ${req.body.num_plazas}, ${req.body.edad_maxima},
     '${req.body.nivel}', '${req.body.hora}', '${req.body.dias}'`;
-    const monitores = req.body.monitores.split(',');
+    const monitores = req.body.monitores.length > 1 ? req.body.monitores.split(',') : req.body.monitores;
     connection.query(`INSERT INTO clases VALUES ('', ${values} )`, (err, data) => {
         if (err) {
-            res.status(404).json({message: err});
+            error = err;
         } else {
-            connection.query(`SELECT id_clase FROM clases ORDER BY id_clase DESC LIMIT 1`, (err, data) => {
-                if (err) {
-                    res.status(404).json({message: err});
+            connection.query(`SELECT id_clase FROM clases ORDER BY id_clase DESC LIMIT 1`, (err2, data2) => {
+                if (err2) {
+                    error = err2;
                 } else {
-                    const id_clase = data[0]['id_clase'];
-                    monitores.forEach(monitor => {
-                        connection.query(`INSERT INTO clasesMonitores VALUES ('${monitor}', '${id_clase}')`, (err3, data3) => {
-                            if (err3) {
-                                res.status(404).json({message: err3});
+                    const id_clase = data2[0]['id_clase'];
+                    if (monitores.length > 1) {
+                        monitores.forEach(monitor => {
+                            connection.query(`INSERT INTO clasesMonitores VALUES ('${monitor}', '${id_clase}')`, (err3, data3) => {
+                                if (err3) {
+                                    error = err3;
+                                }
+                            });
+                        });
+                    } else {
+                        connection.query(`INSERT INTO clasesMonitores VALUES ('${monitores}', '${id_clase}')`, (err4, data4) => {
+                            if (err4) {
+                                error = err4;
                             }
                         });
-                    });
+                    }
                 }
-            })
-            res.status(200).send(data);
+            });
         }
-});
+    });
+    if (error && error.length > 0) {
+        res.status(400).json({message: error});
+    } else {
+        res.status(200).json({message: 'OK'});
+    }
 });
 
 app.delete('/api/clases/:id', (req, res) => {
@@ -322,35 +345,62 @@ app.delete('/api/clases/:id', (req, res) => {
 
 app.put('/api/clases/:id', (req, res) => {
     var id_clase = req.params.id;
+    let error = '';
     const values = `c.nombre = '${req.body.nombre}', 
                     c.num_plazas = ${req.body.num_plazas}, 
                     c.edad_maxima = ${req.body.edad_maxima},
                     c.nivel = '${req.body.nivel}', 
                     c.hora = '${req.body.hora}', 
                     c.dias = '${req.body.dias}'`;
-    const monitores = req.body.monitores.split(',');
-    monitores.forEach(monitor => {
+    const monitores = req.body.monitores.length > 1 ? req.body.monitores.split(',') : req.body.monitores;
+    if (monitores.length > 1) {
+        monitores.forEach(monitor => {
+            connection.query(`DELETE FROM clasesMonitores WHERE id_clase = '${id_clase}'`, (err, data) => {
+                if (err) {
+                    error = err;
+                } else {
+                    connection.query(`UPDATE clases c SET ${values}
+                        WHERE c.id_clase = '${id_clase}'`, (err2, data2) => {
+                            if (err2) {
+                                error = err2;
+                            } else {
+                                connection.query(`INSERT INTO clasesMonitores VALUES ('${monitor}', '${id_clase}')`, (err3, data3) => {
+                                    if (err3) {
+                                        error = err3;
+                                    }
+                                });
+                            }
+                    });
+                }
+            });
+        });
+    } else {
+        const monitor = monitores;
         connection.query(`DELETE FROM clasesMonitores WHERE id_clase = '${id_clase}'`, (err, data) => {
             if (err) {
-                res.status(404).json({message: err});
+               error = err;
             } else {
                 connection.query(`UPDATE clases c SET ${values}
                     WHERE c.id_clase = '${id_clase}'`, (err2, data2) => {
                         if (err2) {
-                            res.status(404).json({message: err2});
+                            error = err2;
                         } else {
                             connection.query(`INSERT INTO clasesMonitores VALUES ('${monitor}', '${id_clase}')`, (err3, data3) => {
                                 if (err3) {
-                                    res.status(404).json({message: err3});
+                                    error = err3;
                                 }
                             });
                         }
                 });
             }
         });
+    }
 
-    });
-    res.status(200).json({message: 'OK'});
+    if (error && error.length > 0) {
+        res.status(400).json({message: error});
+    } else {
+        res.status(200).json({message: 'OK'});
+    }
 });
 
 /***********************/
