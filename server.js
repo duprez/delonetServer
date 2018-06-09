@@ -100,25 +100,11 @@ app.post('/api/socios', (req, res) => {
 
 app.delete('/api/socios/:id', (req, res) => {
     const id_socio = req.params.id;
-    let email;
-    connection.query(`SELECT email FROM socios WHERE id_socio = '${id_socio}'`, (err, data ) => {
+    connection.query(`DELETE s, u FROM socios s JOIN usuarios u ON u.email = s.email WHERE s.id_socio = '${id_socio}'`, (err, data ) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
-            email = data[0].email;
-            connection.query(`DELETE FROM socios WHERE id_socio = '${id_socio}'`, (err2, data2) => {
-                if (err2) {
-                    res.status(404).json({message: err2});
-                } else {
-                    connection.query(`DELETE FROM usuarios WHERE email = '${email}'`, (err3, data3) => {
-                        if (err3) {
-                            res.status(404).json({message: err3});
-                        } else {
-                            res.status(200).send(data3);
-                        }
-                    });
-                }
-            });
+           res.status(200).send(data);
         }
     });
 });
@@ -184,14 +170,20 @@ app.get('/api/monitores/:id', (req, res) => {
 
 app.post('/api/monitores', (req, res) => {
     const values = `'${req.body.nombre}', '${req.body.apellidos}', '${req.body.direccion}', 
-                     ${req.body.telefono}, '${req.body.email}'`;
+                     '${req.body.telefono}', '${req.body.email}'`;
     
-    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', 'delonet', 1, '${req.body.profile_image}')`, (err, data) => {
+    const profile_image = req.body.profile_image ? req.body.profile_image : null;
+    let image = null;
+    if (profile_image && profile_image !== null) {
+        const image_parts = profile_image.split(',');
+        image = '\'' + image_parts[1] + '\'';
+    }
+    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', 'delonet', 1, ${image})`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
             connection.query(`INSERT INTO monitores VALUES ('', ${values} )`, (errMonitor, dataMonitor) => {
-                if (dataMonitor) {
+                if (errMonitor) {
                     res.status(404).json({message: errMonitor});
                 } else {
                     res.status(200).send(dataMonitor);
@@ -203,25 +195,11 @@ app.post('/api/monitores', (req, res) => {
 
 app.delete('/api/monitores/:id', (req, res) => {
     const id_monitor = req.params.id;
-    let email;
-    connection.query(`SELECT email FROM monitores WHERE id_monitor = '${id_monitor}'`, (err, data ) => {
+    connection.query(`DELETE m, u FROM monitores m JOIN usuarios u ON u.email = m.email WHERE m.id_monitor = '${id_monitor}'`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
-            email = data[0].email;
-            connection.query(`DELETE FROM monitores WHERE id_monitor = '${id_monitor}'`, (err2, data2) => {
-                if (err2) {
-                    res.status(404).json({message: err2});
-                } else {
-                    connection.query(`DELETE FROM usuarios WHERE email = '${email}'`, (err3, data3) => {
-                        if (err3) {
-                            res.status(404).json({message: err3});
-                        } else {
-                            res.status(200).send(data3);
-                        }
-                    });
-                }
-            });
+            res.status(200).send(data);
         }
     });
 });
@@ -232,8 +210,21 @@ app.put('/api/monitores/:id', function (req, res) {
                     m.apellidos =  '${req.body.apellidos}', 
                     m.direccion = '${req.body.direccion}', 
                     m.telefono = ${req.body.telefono}`;
-    const valuesUser = `u.email = '${req.body.email}',
-                        u.profile_image = '${req.body.profile_image}'`;
+
+    const profile_image = req.body.profile_image ? req.body.profile_image : null;
+    let image = null;
+    if (profile_image && profile_image !== null) {
+        const image_parts = profile_image.split(',');
+        image = image_parts[1];
+    }
+    let valuesUser;
+    if (image !== null) {
+        valuesUser = `u.email = '${req.body.email}',
+                    u.profile_image = '${image}'`;
+    } else {
+        valuesUser = `u.email = '${req.body.email}',
+                    u.profile_image = ${image}`;
+    }
     connection.query(`UPDATE usuarios u, monitores m SET ${valuesUser}, ${values} WHERE u.email = m.email and m.id_monitor = '${id_monitor}'`, 
         (err, data ) => {
             if (err) {
