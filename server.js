@@ -75,8 +75,15 @@ app.post('/api/socios', (req, res) => {
     const values = `'${req.body.nombre}', '${req.body.apellidos}', '${req.body.direccion}', 
                     '${req.body.fecha_alta}', '${req.body.fecha_baja}',
                      ${req.body.telefono}, ${req.body.id_clase}, '${req.body.email}'`;
-    
-    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', 'delonet', 0, '${req.body.profile_image}')`, (err, data) => {
+
+    const profile_image = req.body.profile_image ? req.body.profile_image : null;
+    let image = null;
+    if (profile_image && profile_image !== null) {
+        const image_parts = profile_image.split(',');
+        image = '\'' + image_parts[1] + '\'';
+    }
+
+    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', 'delonet', 0, ${image})`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
@@ -118,8 +125,6 @@ app.delete('/api/socios/:id', (req, res) => {
 
 app.put('/api/socios/:id', function (req, res) {
     var id_socio = req.params.id;
-    const profile_image = req.body.profile_image;
-    console.log(profile_image);
     const values = `s.nombre = '${req.body.nombre}',
                     s.apellidos =  '${req.body.apellidos}', 
                     s.direccion = '${req.body.direccion}', 
@@ -127,8 +132,22 @@ app.put('/api/socios/:id', function (req, res) {
                     s.fecha_baja = '${req.body.fecha_baja}', 
                     s.telefono = ${req.body.telefono},
                     s.id_clase = ${req.body.id_clase}`;
-    const valuesUser = `u.email = '${req.body.email}',
-                        u.profile_image = '${req.body.profile_image}'`;
+
+    const profile_image = req.body.profile_image ? req.body.profile_image : null;
+    let image = null;
+    if (profile_image && profile_image !== null) {
+        const image_parts = profile_image.split(',');
+        image = image_parts[1];
+    }
+    let valuesUser;
+    if (image !== null) {
+        valuesUser = `u.email = '${req.body.email}',
+                    u.profile_image = '${image}'`;
+    } else {
+        valuesUser = `u.email = '${req.body.email}',
+                    u.profile_image = ${image}`;
+    }
+
     connection.query(`UPDATE usuarios u, socios s SET ${valuesUser}, ${values} WHERE u.email = s.email and s.id_socio = '${id_socio}'`, 
         (err, data ) => {
             if (err) {
