@@ -290,30 +290,43 @@ app.get('/api/clases/:id/add-member', (req, res) => {
 });
 
 app.post('/api/clases', (req, res) => {
+    let error = '';
     const values = `'${req.body.nombre}', ${req.body.num_plazas}, ${req.body.edad_maxima},
     '${req.body.nivel}', '${req.body.hora}', '${req.body.dias}'`;
-    const monitores = req.body.monitores.split(',');
+    const monitores = req.body.monitores.length > 1 ? req.body.monitores.split(',') : req.body.monitores;
     connection.query(`INSERT INTO clases VALUES ('', ${values} )`, (err, data) => {
         if (err) {
-            res.status(404).json({message: err});
+            error = err;
         } else {
-            connection.query(`SELECT id_clase FROM clases ORDER BY id_clase DESC LIMIT 1`, (err, data) => {
-                if (err) {
-                    res.status(404).json({message: err});
+            connection.query(`SELECT id_clase FROM clases ORDER BY id_clase DESC LIMIT 1`, (err2, data2) => {
+                if (err2) {
+                    error = err2;
                 } else {
-                    const id_clase = data[0]['id_clase'];
-                    monitores.forEach(monitor => {
-                        connection.query(`INSERT INTO clasesMonitores VALUES ('${monitor}', '${id_clase}')`, (err3, data3) => {
-                            if (err3) {
-                                res.status(404).json({message: err3});
+                    const id_clase = data2[0]['id_clase'];
+                    if (monitores.length > 1) {
+                        monitores.forEach(monitor => {
+                            connection.query(`INSERT INTO clasesMonitores VALUES ('${monitor}', '${id_clase}')`, (err3, data3) => {
+                                if (err3) {
+                                    error = err3;
+                                }
+                            });
+                        });
+                    } else {
+                        connection.query(`INSERT INTO clasesMonitores VALUES ('${monitores}', '${id_clase}')`, (err4, data4) => {
+                            if (err4) {
+                                error = err4;
                             }
                         });
-                    });
+                    }
                 }
-            })
-            res.status(200).send(data);
+            });
         }
-});
+    });
+    if (error && error.length > 0) {
+        res.status(400).json({message: error});
+    } else {
+        res.status(200).json({message: 'OK'});
+    }
 });
 
 app.delete('/api/clases/:id', (req, res) => {
@@ -332,35 +345,62 @@ app.delete('/api/clases/:id', (req, res) => {
 
 app.put('/api/clases/:id', (req, res) => {
     var id_clase = req.params.id;
+    let error = '';
     const values = `c.nombre = '${req.body.nombre}', 
                     c.num_plazas = ${req.body.num_plazas}, 
                     c.edad_maxima = ${req.body.edad_maxima},
                     c.nivel = '${req.body.nivel}', 
                     c.hora = '${req.body.hora}', 
                     c.dias = '${req.body.dias}'`;
-    const monitores = req.body.monitores.split(',');
-    monitores.forEach(monitor => {
+    const monitores = req.body.monitores.length > 1 ? req.body.monitores.split(',') : req.body.monitores;
+    if (monitores.length > 1) {
+        monitores.forEach(monitor => {
+            connection.query(`DELETE FROM clasesMonitores WHERE id_clase = '${id_clase}'`, (err, data) => {
+                if (err) {
+                    error = err;
+                } else {
+                    connection.query(`UPDATE clases c SET ${values}
+                        WHERE c.id_clase = '${id_clase}'`, (err2, data2) => {
+                            if (err2) {
+                                error = err2;
+                            } else {
+                                connection.query(`INSERT INTO clasesMonitores VALUES ('${monitor}', '${id_clase}')`, (err3, data3) => {
+                                    if (err3) {
+                                        error = err3;
+                                    }
+                                });
+                            }
+                    });
+                }
+            });
+        });
+    } else {
+        const monitor = monitores;
         connection.query(`DELETE FROM clasesMonitores WHERE id_clase = '${id_clase}'`, (err, data) => {
             if (err) {
-                res.status(404).json({message: err});
+               error = err;
             } else {
                 connection.query(`UPDATE clases c SET ${values}
                     WHERE c.id_clase = '${id_clase}'`, (err2, data2) => {
                         if (err2) {
-                            res.status(404).json({message: err2});
+                            error = err2;
                         } else {
                             connection.query(`INSERT INTO clasesMonitores VALUES ('${monitor}', '${id_clase}')`, (err3, data3) => {
                                 if (err3) {
-                                    res.status(404).json({message: err3});
+                                    error = err3;
                                 }
                             });
                         }
                 });
             }
         });
+    }
 
-    });
-    res.status(200).json({message: 'OK'});
+    if (error && error.length > 0) {
+        res.status(400).json({message: error});
+    } else {
+        res.status(200).json({message: 'OK'});
+    }
 });
 
 /***********************/
