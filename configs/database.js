@@ -2,7 +2,7 @@ const data = {
     "host": "localhost",
     "port": 8888,
     "user": "root",
-    "password": "",
+    "password": "root",
     "database": "delonet"
 }
 
