@@ -51,7 +51,8 @@ connection.connect(function (err) {
 /*    API SOCIOS       */
 /***********************/
 app.get('/api/socios', (req, res) => {
-    connection.query("SELECT s.*, u.profile_image FROM socios s, usuarios u where u.email = s.email", (err, data) => {
+    connection.query(`SELECT s.*, u.profile_image, c.nombre as nombre_clase FROM socios s, usuarios u, clases c 
+                    where u.email = s.email and s.id_clase = c.id_clase`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
