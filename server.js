@@ -9,6 +9,7 @@ const mysql = require('mysql');
 const app = express();
 const bodyParser = require('body-parser'); // Cuerpo de la consulta al servidor
 const cors = require('cors');
+var nodemailer = require('nodemailer'); // Para enviar emails
 
 /******************************/
 /*    CREAMOS EL SERVIDOR    */
@@ -24,15 +25,29 @@ app.listen(port, host, () => {
     console.log(`Server is running at http://${host}:${port}`);
 });
 
+/*************************************/
+/*    DATOS DEL SERVICIO DE EMAIL    */
+/*************************************/
+
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'delonetweb@gmail.com',
+        pass: 'Almeria.2018'
+    }
+});
+
 
 /*****************************************/
 /*    CONECTAMOS CON LA BASE DE DATOS    */
 /*****************************************/
 var connection = mysql.createConnection({
     host: databaseConf['host'],
+    port: databaseConf['port'],
     user: databaseConf['user'],
     password: databaseConf['password'],
-    database: databaseConf['database']
+    database: databaseConf['database'],
+    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
 });
 
 connection.connect(function (err) {
@@ -417,7 +432,7 @@ app.get('/api/reservas', (req, res) => {
     ];
     connection.query("SELECT id_calle, id_reserva, COALESCE(nombre,'Particular') AS nombre, fecha FROM reservas s left join clases c on s.id_clase = c.id_clase order by id_calle ASC", (err, data) => {
         if (err) {
-            res.status(404).json({message: err});
+            res.status(500).json({message: err});
         } else {
             data.forEach(element => {
                 reservas[element.id_calle - 1].events.push(element);
@@ -428,11 +443,17 @@ app.get('/api/reservas', (req, res) => {
 });
 
 app.post('/api/reservas', (req, res) => {
-    const values = `${req.body.id_socio}, ${req.body.id_calle}, ${req.body.id_clase}, 
+    let values;
+    if (req.body.id_clase) {
+        values = `null, ${req.body.id_calle}, ${req.body.id_clase}, 
                     '${req.body.fecha}'`;
+    } else {
+        values = `${req.body.id_socio}, ${req.body.id_calle}, null, 
+                    '${req.body.fecha}'`;
+    }
     connection.query(`INSERT INTO reservas VALUES ('', ${values})`, (err, data) => {
         if (err) {
-            res.status(404).json({message: err});
+            res.status(500).json({message: err});
         } else {
             res.status(200).send(data);
         }
@@ -466,24 +487,23 @@ app.get('/api/calles/:id', (req, res) => {
 /***********************/
 /*    API LOGIN        */
 /***********************/
-
 app.post('/api/sessions', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     connection.query(`SELECT * FROM usuarios WHERE email = '${email}'`, (err, data) => {
         if (err) {
-            res.status(404).json({message: err});
+            res.status(500).json({message: err});
         } else if (data.length < 1) {
-            res.status(404).json({message: 'Usuario no encontrado'});
+            res.status(200).send({message: 'Usuario no encontrado'});
         } else {
             connection.query(`SELECT u.email, u.profile_image, u.is_admin, s.id_socio, s.nombre as s_nombre, 
             m.nombre as m_nombre, m.id_monitor FROM usuarios u 
             left join socios s on u.email = s.email left join monitores m on u.email = m.email 
             WHERE u.email = '${email}' and u.passwrd = '${password}'`, (err, data) => {
                 if (err) {
-                    res.status(404).json({message: err});
+                    res.status(500).json({message: err});
                 } else if (data.length < 1) {
-                    res.status(404).json({message: 'Contraseña incorrecta'});
+                    res.status(200).send({message: 'Contraseña incorrecta'});
                 } else {
                     let response;
                     if (!data[0].is_admin) {
@@ -504,6 +524,30 @@ app.post('/api/sessions', (req, res) => {
                     res.status(200).send(response);
                 }
             });
+        }
+    });
+});
+
+/*************************/
+/*    API CONTACTO       */
+/*************************/
+app.post('/api/contact', (req, res) => {
+    const email = req.body.email;
+    const name = req.body.name;
+    const body = req.body.body;
+
+    var mailOptions = {
+        from: 'delonetweb@gmail.com',
+        to: 'delonetweb@gmail.com',
+        subject: `De: ${name} (${email})`,
+        text: body
+    };
+
+    transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+            res.status(500).send(error);
+        } else {
+            res.status(200).send({success: true});
         }
     });
 });
