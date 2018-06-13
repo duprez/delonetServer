@@ -9,6 +9,7 @@ const mysql = require('mysql');
 const app = express();
 const bodyParser = require('body-parser'); // Cuerpo de la consulta al servidor
 const cors = require('cors');
+var nodemailer = require('nodemailer'); // Para enviar emails
 
 /******************************/
 /*    CREAMOS EL SERVIDOR    */
@@ -22,6 +23,18 @@ const port = serverConf['port'];
 
 app.listen(port, host, () => {
     console.log(`Server is running at http://${host}:${port}`);
+});
+
+/*************************************/
+/*    DATOS DEL SERVICIO DE EMAIL    */
+/*************************************/
+
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'delonetweb@gmail.com',
+        pass: 'Almeria.2018'
+    }
 });
 
 
@@ -474,7 +487,6 @@ app.get('/api/calles/:id', (req, res) => {
 /***********************/
 /*    API LOGIN        */
 /***********************/
-
 app.post('/api/sessions', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -512,6 +524,30 @@ app.post('/api/sessions', (req, res) => {
                     res.status(200).send(response);
                 }
             });
+        }
+    });
+});
+
+/*************************/
+/*    API CONTACTO       */
+/*************************/
+app.post('/api/contact', (req, res) => {
+    const email = req.body.email;
+    const name = req.body.name;
+    const body = req.body.body;
+
+    var mailOptions = {
+        from: 'delonetweb@gmail.com',
+        to: 'delonetweb@gmail.com',
+        subject: `De: ${name} (${email})`,
+        text: body
+    };
+
+    transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+            res.status(500).send(error);
+        } else {
+            res.status(200).send({success: true});
         }
     });
 });
