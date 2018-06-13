@@ -43,11 +43,9 @@ var transporter = nodemailer.createTransport({
 /*****************************************/
 var connection = mysql.createConnection({
     host: databaseConf['host'],
-    port: databaseConf['port'],
     user: databaseConf['user'],
     password: databaseConf['password'],
-    database: databaseConf['database'],
-    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+    database: databaseConf['database']
 });
 
 connection.connect(function (err) {
