@@ -48,6 +48,30 @@ connection.connect(function (err) {
 /***********************************/
 
 /***********************/
+/*    API USUARIOS     */
+/***********************/
+app.put('/api/password/:id', function (req, res) {
+    var id_user = req.params.id;
+    const values = `u.passwrd = '${req.body.password}'`;
+    const tabla = req.body.type;
+    var id;
+    switch(tabla) {
+        case 'socios':
+            id = 'id_socio'; break;
+        case 'monitores':
+            id = 'id_monitor'; break;
+    }
+    connection.query(`UPDATE usuarios u, ${tabla} t SET ${values} WHERE u.email = t.email and t.${id} = '${id_user}'`, 
+        (err, data ) => {
+            if (err) {
+                res.status(404).json({message: err});
+            } else {
+                res.status(200).send(data);
+            }
+    });
+});
+
+/***********************/
 /*    API SOCIOS       */
 /***********************/
 app.get('/api/socios', (req, res) => {
