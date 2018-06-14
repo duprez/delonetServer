@@ -91,8 +91,8 @@ app.put('/api/password/:id', function (req, res) {
 /*    API SOCIOS       */
 /***********************/
 app.get('/api/socios', (req, res) => {
-    connection.query(`SELECT s.*, u.profile_image, c.nombre as nombre_clase FROM socios s, usuarios u, clases c 
-                    where u.email = s.email and s.id_clase = c.id_clase`, (err, data) => {
+    connection.query(`SELECT s.*, u.profile_image, c.nombre as nombre_clase FROM usuarios u inner join socios s 
+    on u.email = s.email left join clases c on c.id_clase = s.id_clase`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
@@ -138,10 +138,19 @@ app.post('/api/socios', (req, res) => {
                         from: 'delonetweb@gmail.com',
                         to: req.body.email,
                         subject: 'Bienvenido a delonet',
-                        html: `<img src="https://i.imgur.com/KucOgdI.png" style="margin: 0 auto"><br>
-                        <h1>Bienvenido a delonet<h1>
-                        <p>Se ha generado su nueva cuenta de socio con éxito.<p>
-                        <p>Puede loguearse con las siguientes credenciales</p>`
+                        html: `
+                            <table border="0" width="550">
+                                <tr align="center" style="font-size: 2.5rem">Bienvenido a</tr>
+                                <tr align="center"><img style="max-width: 100%" src="https://i.imgur.com/KucOgdI.png"></tr>
+                                <tr></tr>
+                                <tr align="center" style="font-size: 1rem">Se ha generado su nueva cuenta de socio con éxito.</tr>
+                                <tr></tr>
+                                <tr align="center" style="font-size: 1rem"><br>Puede loguearse con las siguientes credenciales:</tr>
+                                <tr align="center" style="font-size: .9rem">Email: ${req.body.email}</tr>
+                                <tr align="center" style="font-size: .9rem">Contraseña: delonet101</tr>
+                                <tr></tr>
+                                <tr align="center" style="font-size: .9rem">¡No olvide cambiar su contraseña!</tr>
+                            </table>`
                     };
                 
                     transporter.sendMail(mailOptions, function(error, info) {
@@ -246,6 +255,33 @@ app.post('/api/monitores', (req, res) => {
                     res.status(404).json({message: errMonitor});
                 } else {
                     res.status(200).send(dataMonitor);
+
+                    mailOptions = {
+                        from: 'delonetweb@gmail.com',
+                        to: req.body.email,
+                        subject: 'Bienvenido a delonet',
+                        html: `
+                            <table border="0" width="550">
+                                <tr align="center" style="font-size: 2.5rem">Bienvenido a</tr>
+                                <tr align="center"><img style="max-width: 100%" src="https://i.imgur.com/KucOgdI.png"></tr>
+                                <tr></tr>
+                                <tr align="center" style="font-size: 1rem">Se ha generado su nueva cuenta de monitor con éxito.</tr>
+                                <tr></tr>
+                                <tr align="center" style="font-size: 1rem"><br>Puede loguearse con las siguientes credenciales:</tr>
+                                <tr align="center" style="font-size: .9rem">Email: ${req.body.email}</tr>
+                                <tr align="center" style="font-size: .9rem">Contraseña: delonet101</tr>
+                                <tr></tr>
+                                <tr align="center" style="font-size: .9rem">¡No olvide cambiar su contraseña!</tr>
+                            </table>`
+                    };
+                
+                    transporter.sendMail(mailOptions, function(error, info) {
+                        if (error) {
+                            res.status(500).send(error);
+                        } else {
+                            res.status(200).send({success: true});
+                        }
+                    });
                 }
             });
         } 
