@@ -130,8 +130,6 @@ app.post('/api/socios', (req, res) => {
                 if (errSocio) {
                     res.status(404).json({message: errSocio});
                 } else {
-                    res.status(200).send(dataSocio);
-
                     mailOptions = {
                         from: 'delonetweb@gmail.com',
                         to: req.body.email,
@@ -153,9 +151,9 @@ app.post('/api/socios', (req, res) => {
                 
                     transporter.sendMail(mailOptions, function(error, info) {
                         if (error) {
-                            res.status(500).send(error);
+                            res.status(500).json(error);
                         } else {
-                            res.status(200).send({success: true});
+                            res.status(200).send(dataSocio);
                         }
                     });
                 }
@@ -252,8 +250,6 @@ app.post('/api/monitores', (req, res) => {
                 if (errMonitor) {
                     res.status(404).json({message: errMonitor});
                 } else {
-                    res.status(200).send(dataMonitor);
-
                     mailOptions = {
                         from: 'delonetweb@gmail.com',
                         to: req.body.email,
@@ -277,7 +273,7 @@ app.post('/api/monitores', (req, res) => {
                         if (error) {
                             res.status(500).send(error);
                         } else {
-                            res.status(200).send({success: true});
+                            res.status(200).send(dataMonitor);
                         }
                     });
                 }
