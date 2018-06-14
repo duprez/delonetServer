@@ -121,7 +121,7 @@ app.post('/api/socios', (req, res) => {
         image = '\'' + image_parts[1] + '\'';
     }
 
-    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', 'delonet', 0, ${image})`, (err, data) => {
+    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', '8e35c1e92ecf951d202414c75c3885ce', 0, ${image})`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {
@@ -216,7 +216,7 @@ app.post('/api/monitores', (req, res) => {
         const image_parts = profile_image.split(',');
         image = '\'' + image_parts[1] + '\'';
     }
-    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', 'delonet', 1, ${image})`, (err, data) => {
+    connection.query(`INSERT INTO usuarios VALUES ('${req.body.email}', '8e35c1e92ecf951d202414c75c3885ce', 1, ${image})`, (err, data) => {
         if (err) {
             res.status(404).json({message: err});
         } else {

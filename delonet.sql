@@ -17,7 +17,7 @@ use delonet;
 /***********************/
 CREATE TABLE delonet.usuarios (
  email VARCHAR(50) PRIMARY KEY,
- passwrd VARCHAR(30),
+ passwrd VARCHAR(300),
  is_admin TINYINT(1),
  profile_image LONGTEXT
 ) ENGINE=INNODB;
@@ -177,15 +177,15 @@ USE delonet;
 /***********************/
 
 INSERT INTO usuarios (email, passwrd, is_admin, profile_image)
-VALUES ('adrian@delonet.com', '123456', 1, ''),
-('laura@delonet.com', '123456', 1, ''),
-('gabriel@delonet.com', '123456', 1, ''),
-('juan@gmail.com', '123456', 0, ''),
-('antonio@gmail.com', '123456', 0, ''),
-('alicia@gmail.com', '123456', 0, ''),
-('fran@gmail.com', '123456', 0, ''),
-('estefania@gmail.com', '123456', 0, ''),
-('jose@gmail.com', '123456', 0, '');
+VALUES ('adrian@delonet.com', '8e35c1e92ecf951d202414c75c3885ce', 1, ''),
+('laura@delonet.com', '8e35c1e92ecf951d202414c75c3885ce', 1, ''),
+('gabriel@delonet.com', '8e35c1e92ecf951d202414c75c3885ce', 1, ''),
+('juan@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('antonio@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('alicia@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('fran@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('estefania@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('jose@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, '');
 
 
 /***********************/
