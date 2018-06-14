@@ -44,11 +44,9 @@ var mailOptions;
 /*****************************************/
 var connection = mysql.createConnection({
     host: databaseConf['host'],
-    port: databaseConf['port'],
     user: databaseConf['user'],
     password: databaseConf['password'],
     database: databaseConf['database'],
-    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
 });
 
 connection.connect(function (err) {
