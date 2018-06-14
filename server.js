@@ -37,15 +37,18 @@ var transporter = nodemailer.createTransport({
     }
 });
 
+var mailOptions;
 
 /*****************************************/
 /*    CONECTAMOS CON LA BASE DE DATOS    */
 /*****************************************/
 var connection = mysql.createConnection({
     host: databaseConf['host'],
+    port: databaseConf['port'],
     user: databaseConf['user'],
     password: databaseConf['password'],
-    database: databaseConf['database']
+    database: databaseConf['database'],
+    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
 });
 
 connection.connect(function (err) {
@@ -130,6 +133,24 @@ app.post('/api/socios', (req, res) => {
                     res.status(404).json({message: errSocio});
                 } else {
                     res.status(200).send(dataSocio);
+
+                    mailOptions = {
+                        from: 'delonetweb@gmail.com',
+                        to: req.body.email,
+                        subject: 'Bienvenido a delonet',
+                        html: `<img src="https://i.imgur.com/KucOgdI.png" style="margin: 0 auto"><br>
+                        <h1>Bienvenido a delonet<h1>
+                        <p>Se ha generado su nueva cuenta de socio con éxito.<p>
+                        <p>Puede loguearse con las siguientes credenciales</p>`
+                    };
+                
+                    transporter.sendMail(mailOptions, function(error, info) {
+                        if (error) {
+                            res.status(500).send(error);
+                        } else {
+                            res.status(200).send({success: true});
+                        }
+                    });
                 }
             });
         }
@@ -559,7 +580,7 @@ app.post('/api/contact', (req, res) => {
     const name = req.body.name;
     const body = req.body.body;
 
-    var mailOptions = {
+    mailOptions = {
         from: 'delonetweb@gmail.com',
         to: 'delonetweb@gmail.com',
         subject: `De: ${name} (${email})`,
