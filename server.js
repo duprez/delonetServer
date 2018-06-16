@@ -64,6 +64,21 @@ connection.connect(function (err) {
 /***********************/
 /*    API USUARIOS     */
 /***********************/
+app.get('/api/usuarios/check-email', (req, res) => {
+    const email = req.query.email; // query sirve para coger los parametros pasados
+    connection.query(`SELECT email FROM usuarios WHERE email = '${email}'`, (err, data) => {
+        if (err) {
+            res.status(404).json({message: err});
+        } else {
+            if (data.length === 0) {
+                res.status(200).json({invalid: false});
+            } else {
+                res.status(200).json({invalid: true, email: data[0].email});
+            }
+        }
+    });
+});
+
 app.put('/api/password/:id', function (req, res) {
     var id_user = req.params.id;
     const values = `u.passwrd = '${req.body.password}'`;
@@ -332,9 +347,24 @@ app.get('/api/clases', (req, res) => {
                       cm.id_clase ORDER BY c.id_clase`;
     connection.query(`${consulta}`, (err, data) => {
         if (err) {
-            res.status(404).json({message: err});
+            res.status(500).json({message: err});
         } else {
-            res.status(200).send(data);
+            const consulta2 = `select count(*) as members, s.id_clase from socios s where s.id_clase is not null group by s.id_clase`;
+            connection.query(`${consulta2}`, (err, data2) => {
+                if (err) {
+                    res.status(500).json({message: err});
+                } else {
+                    data.forEach( clase => {
+                        Object.assign(clase, {plazas_ocupadas: 0});
+                    });
+
+                    data2.forEach( clase => {
+                        data.find( x => x.id_clase === clase.id_clase).plazas_ocupadas = clase.members;
+                    });
+
+                    res.status(200).send(data);
+                }
+            });
         }
     });
 });
