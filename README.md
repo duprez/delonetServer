@@ -3,12 +3,23 @@
 <br/>
 Esta es la parte que incluye todos los datos del servidor del proyecto delonet.
 <br/><br/>
-Para poder utilizarlo deberás usar:
-<ol>
-    <li> Hacer npm i en el paquete principal. </li>
-    <li> Usar Wampp/Mampp/Lampp. </li>
-    <li> Si tú entorno de trabajo es un Mac, deberás hacer algunos cambios documentados más abajo. </li>
-</ol>
+Para poder utilizarlo deberás instalar todos los paquetes usados para ello ejecutaremos el siguiente comando en la raíz del proyecto:<br> 
+
+<pre>npm install</pre>
+
+Una vez acabado este paso, deberemos instalar <a href="https://www.apachefriends.org/es/index.html">Xampp</a> o sus derivados (Mampp/Lampp). Recuerda iniciar MySQL y PhpMyAdmin.
+
+Luego descarga nuestro archivo sql, e importalo a phpmyadmin.
+
+Por último solo deberás ejecutar el comando
+
+<pre>npm run dev</pre>
+
+#### OR
+
+<pre>npm start</pre>
+
+Nota: Si tu entorno de trabajo es un Mac, deberás hacer algunos cambios documentados más abajo.
 
 ## Mac
 Por defecto, MAMP utiliza el puerto 8888, pero la conexión a la base de datos SQL se realiza utilizando el puerto 3306
@@ -51,3 +62,6 @@ Finalmente, abre el archivo server.js del directorio raíz del proyecto y añade
 ## Contributors
 Este proyecto ha sido realizado por Juan Manuel Martín Escobar y Antonio Duprez Hernández. <br>
 Proyecto de fin de curso de 2º de DAW.
+
+<img src="./bruni.jpeg" width="250px"> <img src="./gordito.jpeg" width="250px">
+
