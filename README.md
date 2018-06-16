@@ -5,7 +5,7 @@ Esta es la parte que incluye todos los datos del servidor del proyecto delonet.
 <br/><br/>
 Para poder utilizarlo deberás instalar todos los paquetes usados para ello ejecutaremos el siguiente comando en la raíz del proyecto:<br> 
 
-<pre>npm install</pre>
+<br><pre>npm install</pre>
 
 Una vez acabado este paso, deberemos instalar <a href="https://www.apachefriends.org/es/index.html">Xampp</a> o sus derivados (Mampp/Lampp). Recuerda iniciar MySQL y PhpMyAdmin.
 
