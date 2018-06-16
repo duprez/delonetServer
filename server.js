@@ -64,6 +64,21 @@ connection.connect(function (err) {
 /***********************/
 /*    API USUARIOS     */
 /***********************/
+app.get('/api/usuarios/check-email', (req, res) => {
+    const email = req.query.email; // query sirve para coger los parametros pasados
+    connection.query(`SELECT email FROM usuarios WHERE email = '${email}'`, (err, data) => {
+        if (err) {
+            res.status(404).json({message: err});
+        } else {
+            if (data.length === 0) {
+                res.status(200).json({invalid: false});
+            } else {
+                res.status(200).json({invalid: true, email: data[0].email});
+            }
+        }
+    });
+});
+
 app.put('/api/password/:id', function (req, res) {
     var id_user = req.params.id;
     const values = `u.passwrd = '${req.body.password}'`;
