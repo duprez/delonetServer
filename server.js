@@ -347,9 +347,24 @@ app.get('/api/clases', (req, res) => {
                       cm.id_clase ORDER BY c.id_clase`;
     connection.query(`${consulta}`, (err, data) => {
         if (err) {
-            res.status(404).json({message: err});
+            res.status(500).json({message: err});
         } else {
-            res.status(200).send(data);
+            const consulta2 = `select count(*) as members, s.id_clase from socios s where s.id_clase is not null group by s.id_clase`;
+            connection.query(`${consulta2}`, (err, data2) => {
+                if (err) {
+                    res.status(500).json({message: err});
+                } else {
+                    data.forEach( clase => {
+                        Object.assign(clase, {plazas_ocupadas: 0});
+                    });
+
+                    data2.forEach( clase => {
+                        data.find( x => x.id_clase === clase.id_clase).plazas_ocupadas = clase.members;
+                    });
+
+                    res.status(200).send(data);
+                }
+            });
         }
     });
 });
