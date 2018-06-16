@@ -46,7 +46,7 @@ var connection = mysql.createConnection({
     host: databaseConf['host'],
     user: databaseConf['user'],
     password: databaseConf['password'],
-    database: databaseConf['database'],
+    database: databaseConf['database']
 });
 
 connection.connect(function (err) {
@@ -375,9 +375,22 @@ app.get('/api/clases/:id', (req, res) => {
                      and  c.id_clase = cm.id_clase GROUP BY cm.id_clase ORDER BY c.id_clase`;
     connection.query(`${consulta}`, (err, data) => {
         if (err) {
-            res.status(404).json({message: err});
+            res.status(500).json({message: err});
         } else {
-            res.status(200).send(data[0]);
+            const consulta2 = `select count(*) as members, s.id_clase from socios s where s.id_clase = '${id_clase}' group by s.id_clase`;
+            connection.query(`${consulta2}`, (err, data2) => {
+                if (err) {
+                    res.status(500).json({message: err});
+                } else {
+                    Object.assign(data[0], {plazas_ocupadas: 0});
+
+                    data2.forEach( clase => {
+                        data.find( x => x.id_clase === clase.id_clase).plazas_ocupadas = clase.members;
+                    });
+
+                    res.status(200).send(data[0]);
+                }
+            });
         }
     });
 });
