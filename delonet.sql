@@ -185,6 +185,33 @@ VALUES ('adrian@delonet.com', '8e35c1e92ecf951d202414c75c3885ce', 1, ''),
 ('alicia@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
 ('fran@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
 ('estefania@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('pepe@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('roberto@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('sofia@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('carla@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('roberta@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('alejandra@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('alex@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('alejandro@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('amin@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('carlos@delonet.com', '8e35c1e92ecf951d202414c75c3885ce', 1, ''),
+('carla@delonet.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('alicia@delonet.com', '8e35c1e92ecf951d202414c75c3885ce', 1, ''),
+('fran@delonet.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('estefania@delonet.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('pepe@delonet.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('roberto@delonet.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('roberta@delonet.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('alejandro@delonet.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('alex@delonet.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('alex@yahoo.com', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('gabriel@yahoo.es', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('juan@yahoo.es', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('antonio@yahoo.es', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('alicia@yahoo.es', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('fran@yahoo.es', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('estefania@yahoo.es', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
+('pepe@yahoo.es', '8e35c1e92ecf951d202414c75c3885ce', 0, ''),
 ('jose@gmail.com', '8e35c1e92ecf951d202414c75c3885ce', 0, '');
 
 
@@ -196,11 +223,20 @@ INSERT INTO clases (nombre, num_plazas, edad_maxima, nivel, hora, dias)
 VALUES ('Aquagym', 10, null, 'Principiante', '20:00:00', 'Viernes'),
 ('Natación Infantil', 10, 10, 'Principiante', '16:00:00', 'Lunes, Miércoles'),
 ('Natación Infantil', 10, 10, 'Principiante', '17:00:00', 'Lunes, Miércoles'),
+('Natación Infantil', 10, 10, 'Principiante', '18:00:00', 'Lunes, Miércoles'),
 ('Natación Iniciación', 10, null, 'Principiante', '18:00:00', 'Martes, Jueves'),
 ('Natación Iniciación', 10, null, 'Principiante', '19:00:00', 'Martes, Jueves'),
 ('Natación Iniciación', 10, null, 'Principiante', '20:00:00', 'Martes, Jueves'),
 ('Natación Avanzada', 10, null, 'Avanzado', '18:00:00', 'Lunes, Miércoles'),
-('Natación Avanzada', 10, null, 'Avanzado', '19:00:00', 'Lunes, Miércoles');
+('Natación Avanzada', 10, null, 'Avanzado', '15:00:00', 'Lunes, Miércoles'),
+('Natación Avanzada', 10, null, 'Avanzado', '19:00:00', 'Lunes, Miércoles'),
+('Espalda', 8, null, 'Intermedio', '17:00:00', 'Martes, Jueves'),
+('Espalda', 8, null, 'Intermedio', '19:00:00', 'Martes, Jueves'),
+('Espalda', 8, null, 'Intermedio', '16:00:00', 'Martes, Jueves'),
+('Espalda', 5, null, 'Intermedio', '18:00:00', 'Martes, Jueves'),
+('Aquagym', 10, null, 'Principiante', '15:00:00', 'Viernes'),
+('Aquagym', 10, null, 'Principiante', '19:00:00', 'Viernes'),
+('Aquagym', 5, null, 'Principiante', '20:00:00', 'Viernes');
 
 
 /***********************/
@@ -213,7 +249,33 @@ VALUES ('Juan', 'Martin', 'C/ Laujar de Andarax 37, Vicar', '2018/06/02', '2018/
 ('Alicia', 'Rodriguez', 'C/ Blanca 6, Aguadulce', '2018/06/28', '2018/07/28', '612345678', 2, 'alicia@gmail.com'),
 ('Fran', 'Ruiz', 'C/ Verde 12, Almeria', '2018/06/25', '2018/07/25', '601234567', 7, 'fran@gmail.com'),
 ('Estefanía', 'Padilla', 'C/ Rojo 43, Vicar', '2018/06/11', '2018/07/11', '656789812', 5, 'estefania@gmail.com'),
-('Jose', 'Díaz', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', 1, 'jose@gmail.com');
+('Jose', 'Díaz', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'jose@gmail.com'),
+('Pepe', 'Baeza', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111',  NULL, 'pepe@gmail.com'),
+('Roberto', 'Galdeano', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'roberto@gmail.com'),
+('Sofia', 'Díaz', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'sofia@gmail.com'),
+('Carla', 'Gomez', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'carla@gmail.com'),
+('Roberta', 'Duprez', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'roberta@gmail.com'),
+('Alejandra', 'Hernandez', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'alejandra@gmail.com'),
+('Alex', 'Galdeano', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'alex@gmail.com'),
+('Alejandro', 'Duprez', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'alejandro@gmail.com'),
+('Amin', 'Kirikout', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'amin@gmail.com'),
+('Carla', 'Carmona', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'carla@delonet.com'),
+('Fran', 'Escobar', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'fran@delonet.com'),
+('Estefania', 'Montoya', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'estefania@delonet.com'),
+('Pepe', 'Escobar', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'pepe@delonet.com'),
+('Roberto', 'Martín', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'roberto@delonet.com'),
+('Roberta', 'Hernandez', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'roberta@delonet.com'),
+('Alejandro', 'Ibañez', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'alejandro@delonet.com'),
+('Alex', 'Carmona', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'alex@delonet.com'),
+('Alex', 'Duprez', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'alex@yahoo.com'),
+('Gabriel', 'Hernandez', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'gabriel@yahoo.es'),
+('Juan', 'Galdeano', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'juan@yahoo.es'),
+('Antonio', 'Gomez', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'antonio@yahoo.es'),
+('Alicia', 'Gilabert', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'alicia@yahoo.es'),
+('Fran', 'Gomez', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'fran@yahoo.es'),
+('Estefania', 'Sevilla', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'estefania@yahoo.es'),
+('Pepe', 'Díaz', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'pepe@yahoo.es'),
+('Jose', 'Fernandez', 'C/ Amarilla 15, El Ejido', '2018/06/06', '2018/07/06', '654267111', NULL, 'jose@gmail.com');
 
 
 /***********************/
@@ -223,7 +285,9 @@ VALUES ('Juan', 'Martin', 'C/ Laujar de Andarax 37, Vicar', '2018/06/02', '2018/
 INSERT INTO monitores (nombre, apellidos, direccion, telefono, email)
 VALUES ('Adrián', 'Roda', 'C/ Ancha 12, Vícar', '612345122', 'adrian@delonet.com'),
 ('Laura', 'Alcántara', 'C/ Estrecha 27, Vícar', '678568765', 'laura@delonet.com'),
-('Gabriel', 'Manzano', 'C/ Intermedia 7, Vícar', '609675493', 'gabriel@delonet.com');
+('Gabriel', 'Manzano', 'C/ Intermedia 7, Vícar', '609675493', 'gabriel@delonet.com'),
+('Carlos', 'Gomez', 'C/ Amarilla 15, El Ejido', '654267111', 'carlos@delonet.com'),
+('Alicia', 'Martín', 'C/ Amarilla 15, El Ejido', '654267111', 'alicia@delonet.com');
 
 
 /***********************/
@@ -276,7 +340,16 @@ VALUES (1, 1),
 (3, 5),
 (3, 6),
 (1, 7),
-(1, 8);
+(2, 8),
+(4, 9),
+(5, 10),
+(3, 11),
+(2, 12),
+(1, 13),
+(2, 14),
+(3, 15),
+(4, 16),
+(5, 17);
 
 
 /***********************/
